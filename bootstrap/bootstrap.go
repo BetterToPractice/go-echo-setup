@@ -14,11 +14,11 @@ var Module = fx.Options(
 	fx.Invoke(bootstrap),
 )
 
-func bootstrap(lifecycle fx.Lifecycle, handler lib.HttpHandler) {
+func bootstrap(lifecycle fx.Lifecycle, handler lib.HttpHandler, config lib.Config) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				if err := handler.Engine.Start(":1323"); err != nil {
+				if err := handler.Engine.Start(config.Http.ListenAddr()); err != nil {
 					if errors.Is(err, http.ErrServerClosed) {
 						fmt.Println("run error", err)
 					} else {
@@ -29,7 +29,8 @@ func bootstrap(lifecycle fx.Lifecycle, handler lib.HttpHandler) {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			handler.Engine.Close()
+			if err := handler.Engine.Close(); err != nil {
+			}
 			return nil
 		},
 	})
