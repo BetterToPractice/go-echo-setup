@@ -25,5 +25,5 @@ var StartCmd = &cobra.Command{
 }
 
 func runApplication() {
-	fx.New(bootstrap.Module).Run()
+	fx.New(bootstrap.Module, fx.NopLogger).Run()
 }
