@@ -15,6 +15,7 @@ var defaultConfig = Config{
 		Host: "0.0.0.0",
 		Port: 9999,
 	},
+	Log: &LogConfig{},
 }
 
 func NewConfig() Config {
@@ -32,11 +33,19 @@ func NewConfig() Config {
 type Config struct {
 	Name string      `mapstructure:"Name"`
 	Http *HttpConfig `mapstructure:"Http"`
+	Log  *LogConfig  `mapstructure:"Log"`
 }
 
 type HttpConfig struct {
 	Host string `mapstructure:"Host" validate:"ipv4"`
 	Port int    `mapstructure:"Port" validate:"gte=1,lte=65535"`
+}
+
+type LogConfig struct {
+	Level       string `mapstructure:"Level"`
+	Format      string `mapstructure:"Format"`
+	Directory   string `mapstructure:"Directory"`
+	Development string `mapstructure:"Development"`
 }
 
 func (a *HttpConfig) ListenAddr() string {
