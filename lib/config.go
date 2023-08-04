@@ -16,6 +16,12 @@ var defaultConfig = Config{
 		Port: 9999,
 	},
 	Log: &LogConfig{},
+	Database: &DatabaseConfig{
+		Parameters:   "",
+		MaxLifetime:  7200,
+		MaxOpenConns: 150,
+		MaxIdleConns: 50,
+	},
 }
 
 func NewConfig() Config {
@@ -31,9 +37,10 @@ func NewConfig() Config {
 }
 
 type Config struct {
-	Name string      `mapstructure:"Name"`
-	Http *HttpConfig `mapstructure:"Http"`
-	Log  *LogConfig  `mapstructure:"Log"`
+	Name     string          `mapstructure:"Name"`
+	Http     *HttpConfig     `mapstructure:"Http"`
+	Log      *LogConfig      `mapstructure:"Log"`
+	Database *DatabaseConfig `mapstructure:"Database"`
 }
 
 type HttpConfig struct {
@@ -46,6 +53,25 @@ type LogConfig struct {
 	Format      string `mapstructure:"Format"`
 	Directory   string `mapstructure:"Directory"`
 	Development string `mapstructure:"Development"`
+}
+
+type DatabaseConfig struct {
+	Engine      string `mapstructure:"Engine"`
+	Name        string `mapstructure:"Name"`
+	Host        string `mapstructure:"Host"`
+	Port        int    `mapstructure:"Port"`
+	Username    string `mapstructure:"Username"`
+	Password    string `mapstructure:"Password"`
+	TablePrefix string `mapstructure:"TablePrefix"`
+	Parameters  string `mapstructure:"Parameters"`
+
+	MaxLifetime  int `mapstructure:"MaxLifetime"`
+	MaxOpenConns int `mapstructure:"MaxOpenConns"`
+	MaxIdleConns int `mapstructure:"MaxIdleConns"`
+}
+
+func (a DatabaseConfig) DSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s", a.Username, a.Password, a.Host, a.Port, a.Name, a.Parameters)
 }
 
 func (a *HttpConfig) ListenAddr() string {

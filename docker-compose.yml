@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  db:
+    container_name: "echo-setup-db"
+    image: "postgres:14-alpine"
+    environment:
+      - POSTGRES_USER=setup_user
+      - POSTGRES_PASSWORD=setup_password
+      - POSTGRES_DB=setup_db
+    volumes:
+      - go-echo-setup-data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+volumes:
+  go-echo-setup-data: {}
