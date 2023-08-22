@@ -64,6 +64,8 @@ type DatabaseConfig struct {
 	Password    string `mapstructure:"Password"`
 	TablePrefix string `mapstructure:"TablePrefix"`
 	Parameters  string `mapstructure:"Parameters"`
+	SslMode     string `mapstructure:"SslMode"`
+	TimeZone    string `mapstructure:"TimeZone"`
 
 	MaxLifetime  int `mapstructure:"MaxLifetime"`
 	MaxOpenConns int `mapstructure:"MaxOpenConns"`
@@ -71,7 +73,7 @@ type DatabaseConfig struct {
 }
 
 func (a DatabaseConfig) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s", a.Username, a.Password, a.Host, a.Port, a.Name, a.Parameters)
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", a.Host, a.Username, a.Password, a.Name, a.Port, a.SslMode, a.TimeZone)
 }
 
 func (a *HttpConfig) ListenAddr() string {

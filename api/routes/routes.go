@@ -4,6 +4,7 @@ import "go.uber.org/fx"
 
 var Module = fx.Options(
 	fx.Provide(NewHomeRoutes),
+	fx.Provide(NewUserRoutes),
 	fx.Provide(NewRoutes),
 )
 
@@ -15,9 +16,11 @@ type Routes []IRoute
 
 func NewRoutes(
 	homeRoutes HomeRoutes,
+	userRoutes UserRoutes,
 ) Routes {
 	return Routes{
 		homeRoutes,
+		userRoutes,
 	}
 }
 

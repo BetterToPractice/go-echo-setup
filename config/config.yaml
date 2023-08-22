@@ -15,3 +15,5 @@ Database:
   MaxLifetime: 7200
   MaxOpenConns: 150
   MaxIdleConns: 50
+  SslMode: disable
+  TimeZone: Asia/Jakarta
