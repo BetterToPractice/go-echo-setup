@@ -1,7 +1,7 @@
 Name: go-echo-setup
 
 Http:
-  Host: 127.0.0.1
+  Host: localhost
   Port: 5000
 
 Database:
@@ -17,3 +17,7 @@ Database:
   MaxIdleConns: 50
   SslMode: disable
   TimeZone: Asia/Jakarta
+
+Cors:
+  AllowOrigins:
+    - "*"

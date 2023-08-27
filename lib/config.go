@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	"net/http"
 )
 
 var configPath = "./config.yml"
@@ -21,6 +22,19 @@ var defaultConfig = Config{
 		MaxLifetime:  7200,
 		MaxOpenConns: 150,
 		MaxIdleConns: 50,
+	},
+	Cors: &CorsConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{
+			http.MethodGet,
+			http.MethodHead,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodPost,
+			http.MethodDelete,
+		},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
 	},
 }
 
@@ -41,6 +55,7 @@ type Config struct {
 	Http     *HttpConfig     `mapstructure:"Http"`
 	Log      *LogConfig      `mapstructure:"Log"`
 	Database *DatabaseConfig `mapstructure:"Database"`
+	Cors     *CorsConfig     `mapstructure:"Cors"`
 }
 
 type HttpConfig struct {
@@ -72,6 +87,13 @@ type DatabaseConfig struct {
 	MaxIdleConns int `mapstructure:"MaxIdleConns"`
 }
 
+type CorsConfig struct {
+	AllowOrigins     []string `mapstructure:"AllowOrigins"`
+	AllowMethods     []string `mapstructure:"AllowMethods"`
+	AllowHeaders     []string `mapstructure:"AllowHeaders"`
+	AllowCredentials bool     `mapstructure:"AllowCredentials"`
+}
+
 func (a DatabaseConfig) DSN() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", a.Host, a.Username, a.Password, a.Name, a.Port, a.SslMode, a.TimeZone)
 }
@@ -80,7 +102,14 @@ func (a *HttpConfig) ListenAddr() string {
 	if err := validator.New().Struct(a); err != nil {
 		return "0.0.0.0:5111"
 	}
-	return fmt.Sprintf("%s:%d", a.Host, a.Port)
+
+	host := a.Host
+	port := a.Port
+	if host == "localhost" {
+		host = "127.0.0.1"
+	}
+
+	return fmt.Sprintf("%s:%d", host, port)
 }
 
 func SetConfigPath(path string) {
