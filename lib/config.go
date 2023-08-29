@@ -100,16 +100,9 @@ func (a DatabaseConfig) DSN() string {
 
 func (a *HttpConfig) ListenAddr() string {
 	if err := validator.New().Struct(a); err != nil {
-		return "0.0.0.0:5111"
+		return "0.0.0.0:5000"
 	}
-
-	host := a.Host
-	port := a.Port
-	if host == "localhost" {
-		host = "127.0.0.1"
-	}
-
-	return fmt.Sprintf("%s:%d", host, port)
+	return fmt.Sprintf("%s:%d", a.Host, a.Port)
 }
 
 func SetConfigPath(path string) {
