@@ -25,5 +25,7 @@ func (l Swagger) Setup() {
 	docs.SwaggerInfo.Title = l.config.Swagger.Title
 	docs.SwaggerInfo.Description = l.config.Swagger.Description
 	docs.SwaggerInfo.Version = l.config.Swagger.Version
+	docs.SwaggerInfo.InfoInstanceName = "Meh"
+
 	l.SetUrl()
 }

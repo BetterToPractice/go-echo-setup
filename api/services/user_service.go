@@ -1,24 +1,27 @@
 package services
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
 )
 
 type UserService struct {
-	logger lib.Logger
-	db     lib.Database
+	logger         lib.Logger
+	userRepository repositories.UserRepository
 }
 
-func NewUserService(logger lib.Logger, db lib.Database) UserService {
+func NewUserService(logger lib.Logger, userRepository repositories.UserRepository) UserService {
 	return UserService{
-		logger: logger,
-		db:     db,
+		logger:         logger,
+		userRepository: userRepository,
 	}
 }
 
-func (c *UserService) Query() (models.UserIndexResult, error) {
-	var result models.UserIndexResult
-	err := c.db.ORM.Model(&models.User{}).Find(&result.Results).Error
-	return result, err
+func (c *UserService) Query(params *models.UserQueryParams) (*models.UserPaginationResult, error) {
+	return c.userRepository.Query(params)
+}
+
+func (c *UserService) GetByUsername(username string) (*models.User, error) {
+	return c.userRepository.GetByUsername(username)
 }

@@ -1,29 +1,32 @@
-definitions:
-  dto.User:
-    properties:
-      id:
-        type: string
-      username:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
-  /users/:
+  /users:
     get:
       consumes:
       - application/json
-      description: get string by ID
+      description: get list several users
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/dto.User'
-            type: array
+      responses: {}
       summary: List several users
       tags:
-      - users
+      - user
+  /users/{username}:
+    get:
+      consumes:
+      - application/json
+      description: get a user by username
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Get a User
+      tags:
+      - user
 swagger: "2.0"

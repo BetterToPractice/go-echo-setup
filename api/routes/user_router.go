@@ -18,5 +18,6 @@ func NewUserRoutes(handler lib.HttpHandler, userController controllers.UserContr
 }
 
 func (a UserRoutes) Setup() {
-	a.handler.Engine.GET("/users", a.userController.Index)
+	a.handler.Engine.GET("/users", a.userController.List)
+	a.handler.Engine.GET("/users/:username", a.userController.Detail)
 }
