@@ -11,7 +11,8 @@ import (
 var configPath = "./config.yml"
 
 var defaultConfig = Config{
-	Name: "go-echo-setup",
+	Name:   "go-echo-setup",
+	Secret: "foobar",
 	Http: &HttpConfig{
 		Host: "0.0.0.0",
 		Port: 9999,
@@ -52,6 +53,7 @@ func NewConfig() Config {
 
 type Config struct {
 	Name     string          `mapstructure:"Name"`
+	Secret   string          `mapstructure:"Secret"`
 	Http     *HttpConfig     `mapstructure:"Http"`
 	Log      *LogConfig      `mapstructure:"Log"`
 	Database *DatabaseConfig `mapstructure:"Database"`
