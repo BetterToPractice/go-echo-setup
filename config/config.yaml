@@ -22,3 +22,9 @@ Database:
 Cors:
   AllowOrigins:
     - "*"
+
+Swagger:
+  Title: "Go Echo Setup Docs"
+  Description: "Collection of Endpoints"
+  Version: "1.0"
+  DocUrl: "/swagger/*"

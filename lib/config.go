@@ -37,6 +37,12 @@ var defaultConfig = Config{
 		AllowHeaders:     []string{"*"},
 		AllowCredentials: true,
 	},
+	Swagger: &SwaggerConfig{
+		Title:       "Go Echo Setup Docs",
+		Description: "Collection of Endpoints",
+		Version:     "1.0",
+		DocUrl:      "/swagger/*",
+	},
 }
 
 func NewConfig() Config {
@@ -58,6 +64,7 @@ type Config struct {
 	Log      *LogConfig      `mapstructure:"Log"`
 	Database *DatabaseConfig `mapstructure:"Database"`
 	Cors     *CorsConfig     `mapstructure:"Cors"`
+	Swagger  *SwaggerConfig  `mapstructure:"Swagger"`
 }
 
 type HttpConfig struct {
@@ -94,6 +101,13 @@ type CorsConfig struct {
 	AllowMethods     []string `mapstructure:"AllowMethods"`
 	AllowHeaders     []string `mapstructure:"AllowHeaders"`
 	AllowCredentials bool     `mapstructure:"AllowCredentials"`
+}
+
+type SwaggerConfig struct {
+	Title       string `mapstructrue:"Title"`
+	Description string `mapstructure:"Description"`
+	Version     string `mapstructure:"Version"`
+	DocUrl      string `mapstructure:"DocUrl"`
 }
 
 func (a DatabaseConfig) DSN() string {
