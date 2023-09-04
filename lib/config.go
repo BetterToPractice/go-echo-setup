@@ -20,9 +20,7 @@ var defaultConfig = Config{
 	Log: &LogConfig{},
 	Database: &DatabaseConfig{
 		Parameters:   "",
-		MaxLifetime:  7200,
-		MaxOpenConns: 150,
-		MaxIdleConns: 50,
+		MigrationDir: "migrations",
 	},
 	Cors: &CorsConfig{
 		AllowOrigins: []string{"*"},
@@ -80,20 +78,16 @@ type LogConfig struct {
 }
 
 type DatabaseConfig struct {
-	Engine      string `mapstructure:"Engine"`
-	Name        string `mapstructure:"Name"`
-	Host        string `mapstructure:"Host"`
-	Port        int    `mapstructure:"Port"`
-	Username    string `mapstructure:"Username"`
-	Password    string `mapstructure:"Password"`
-	TablePrefix string `mapstructure:"TablePrefix"`
-	Parameters  string `mapstructure:"Parameters"`
-	SslMode     string `mapstructure:"SslMode"`
-	TimeZone    string `mapstructure:"TimeZone"`
-
-	MaxLifetime  int `mapstructure:"MaxLifetime"`
-	MaxOpenConns int `mapstructure:"MaxOpenConns"`
-	MaxIdleConns int `mapstructure:"MaxIdleConns"`
+	Engine       string `mapstructure:"Engine"`
+	Name         string `mapstructure:"Name"`
+	Host         string `mapstructure:"Host"`
+	Port         int    `mapstructure:"Port"`
+	Username     string `mapstructure:"Username"`
+	Password     string `mapstructure:"Password"`
+	Parameters   string `mapstructure:"Parameters"`
+	SslMode      string `mapstructure:"SslMode"`
+	TimeZone     string `mapstructure:"TimeZone"`
+	MigrationDir string `mapstructure:"MigrationDir"`
 }
 
 type CorsConfig struct {

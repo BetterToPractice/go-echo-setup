@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewSwagger),
 	fx.Provide(NewLogger),
 	fx.Provide(NewDatabase),
+	fx.Provide(NewMigration),
 )

@@ -12,10 +12,6 @@ Database:
   Port: 5432
   Username: setup_user
   Password: setup_password
-  TablePrefix: t
-  MaxLifetime: 7200
-  MaxOpenConns: 150
-  MaxIdleConns: 50
   SslMode: disable
   TimeZone: Asia/Jakarta
 

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"github.com/BetterToPractice/go-echo-setup/cmd/makemigrations"
 	"github.com/BetterToPractice/go-echo-setup/cmd/migrate"
 	"github.com/BetterToPractice/go-echo-setup/cmd/runserver"
 	"github.com/spf13/cobra"
@@ -11,6 +12,7 @@ import (
 func init() {
 	rootCmd.AddCommand(runserver.StartCmd)
 	rootCmd.AddCommand(migrate.StartCmd)
+	rootCmd.AddCommand(makemigrations.StartCmd)
 }
 
 var rootCmd = &cobra.Command{

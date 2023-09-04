@@ -20,7 +20,6 @@ func NewDatabase(config Config, logger Logger) Database {
 		DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
-			TablePrefix:   config.Database.TablePrefix + "_",
 		},
 		QueryFields: true,
 	})

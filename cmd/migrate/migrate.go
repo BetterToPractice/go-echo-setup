@@ -2,15 +2,20 @@ package migrate
 
 import (
 	"github.com/BetterToPractice/go-echo-setup/lib"
-	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/spf13/cobra"
 )
 
 var configFile string
+var executeAs string
+var filename string
 
 func init() {
 	pf := StartCmd.PersistentFlags()
 	pf.StringVarP(&configFile, "config", "c", "config/config.yaml", "parameter used to start service")
+	pf.StringVarP(&executeAs, "executeAs", "e", "up", "execute name, support up, down, and redo")
+	pf.StringVarP(&filename, "filename", "f", "", "migration file name")
+
+	cobra.MarkFlagRequired(pf, "executeAs")
 }
 
 var StartCmd = &cobra.Command{
@@ -23,12 +28,11 @@ var StartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := lib.NewConfig()
 		logger := lib.NewLogger(config)
-		db := lib.NewDatabase(config, logger)
+		database := lib.NewDatabase(config, logger)
+		migrate := lib.NewMigration(config)
 
-		if err := db.ORM.AutoMigrate(
-			&models.User{},
-		); err != nil {
-			logger.Zap.Fatalf("Error to migrate database: %v", err)
+		if err := migrate.Migrate(executeAs, filename, database); err != nil {
+			logger.Zap.Fatalf("Error to migrate: %v", err)
 		}
 	},
 }
