@@ -10,6 +10,8 @@ type User struct {
 	Username string `gorm:"column:username;size:64;not null;index;" json:"username" validate:"required"`
 	Password string `gorm:"column:password;not null;" json:"password" validate:"required"`
 	Email    string `gorm:"column:email;not null;" json:"email" validate:"required"`
+
+	posts []Post `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type Users = []User

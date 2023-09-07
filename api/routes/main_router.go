@@ -21,4 +21,5 @@ func NewMainRoutes(handler lib.HttpHandler, mainController controllers.MainContr
 
 func (r MainRoutes) Setup() {
 	r.swagger.Setup()
+	r.handler.Engine.GET("", r.mainController.Index)
 }

@@ -37,7 +37,7 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 	user := new(models.User)
 
 	if ok, err := QueryOne(r.db.ORM.Model(user).Where("username = ?", username), user); err != nil {
-		return nil, errors.New("error database")
+		return nil, err
 	} else if !ok {
 		return nil, errors.New("not found")
 	}
