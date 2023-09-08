@@ -11,7 +11,8 @@ type User struct {
 	Password string `gorm:"column:password;not null;" json:"password" validate:"required"`
 	Email    string `gorm:"column:email;not null;" json:"email" validate:"required"`
 
-	posts []Post `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Profile Profile `gorm:"foreignKey:UserID;references:ID;"`
+	Posts   []Post  `gorm:"foreignKey:UserID;references:ID;"`
 }
 
 type Users = []User

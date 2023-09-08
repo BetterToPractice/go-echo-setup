@@ -17,7 +17,7 @@ func NewUserRepository(db lib.Database) UserRepository {
 }
 
 func (r UserRepository) Query(params *models.UserQueryParams) (*models.UserPaginationResult, error) {
-	db := r.db.ORM.Model(&models.Users{})
+	db := r.db.ORM.Preload("Profile").Model(&models.Users{})
 	list := make(models.Users, 0)
 
 	pagination, err := QueryPagination(db, params.PaginationParam, &list)
