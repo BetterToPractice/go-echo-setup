@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"errors"
+	appErr "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
 )
@@ -39,7 +39,7 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 	if ok, err := QueryOne(r.db.ORM.Model(user).Where("username = ?", username), user); err != nil {
 		return nil, err
 	} else if !ok {
-		return nil, errors.New("not found")
+		return nil, appErr.RecordNotFound
 	}
 
 	return user, nil

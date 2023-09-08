@@ -1,9 +1,9 @@
 package repositories
 
 import (
+	appErr "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
-	"github.com/pkg/errors"
 )
 
 type PostRepository struct {
@@ -39,7 +39,7 @@ func (r PostRepository) Get(id string) (*models.Post, error) {
 	if ok, err := QueryOne(r.db.ORM.Preload("User").Model(post).Where("id = ?", id), post); err != nil {
 		return nil, err
 	} else if !ok {
-		return nil, errors.New("not found")
+		return nil, appErr.RecordNotFound
 	}
 
 	return post, nil

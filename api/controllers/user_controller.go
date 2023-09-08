@@ -4,6 +4,7 @@ import (
 	"github.com/BetterToPractice/go-echo-setup/api/services"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
+	"github.com/BetterToPractice/go-echo-setup/pkg/response"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -31,15 +32,15 @@ func NewUserController(logger lib.Logger, userService services.UserService) User
 func (c UserController) List(ctx echo.Context) error {
 	params := new(models.UserQueryParams)
 	if err := ctx.Bind(params); err != nil {
-		return ctx.JSON(http.StatusBadRequest, err.Error())
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
 	}
 
 	qr, err := c.userService.Query(params)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, err.Error())
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, qr)
+	return response.Response{Code: http.StatusOK, Data: qr}.JSON(ctx)
 }
 
 // Detail godoc
@@ -54,7 +55,7 @@ func (c UserController) List(ctx echo.Context) error {
 func (c UserController) Detail(ctx echo.Context) error {
 	user, err := c.userService.GetByUsername(ctx.Param("username"))
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, err.Error())
+		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
 	}
-	return ctx.JSON(http.StatusOK, user)
+	return response.Response{Code: http.StatusOK, Data: user}.JSON(ctx)
 }
