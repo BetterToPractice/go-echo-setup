@@ -14,6 +14,6 @@ COMMIT;
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE "user";
+DROP TABLE "user" CASCADE;
 COMMIT;
 -- +goose StatementEnd
