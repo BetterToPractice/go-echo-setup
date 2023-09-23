@@ -4,6 +4,7 @@ import (
 	appErr "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
+	"github.com/pkg/errors"
 )
 
 type PostRepository struct {
@@ -43,4 +44,12 @@ func (r PostRepository) Get(id string) (*models.Post, error) {
 	}
 
 	return post, nil
+}
+
+func (r PostRepository) Delete(id string) error {
+	post := new(models.Post)
+	if err := r.db.ORM.Model(post).Where("id = ?", id).Delete(post).Error; err != nil {
+		return errors.New("invalid, problem with internal")
+	}
+	return nil
 }

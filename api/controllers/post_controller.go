@@ -44,6 +44,7 @@ func (c PostController) List(ctx echo.Context) error {
 //
 //	@Summary		Detail a post
 //	@Description	get detail a post
+//	@Param 			id path int true "post id"
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
@@ -54,4 +55,22 @@ func (c PostController) Detail(ctx echo.Context) error {
 		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
 	}
 	return response.Response{Code: http.StatusOK, Data: post}.JSON(ctx)
+}
+
+// Destroy godoc
+//
+// @summary			Delete a post
+// @Description		perform delete a post
+// @Param 			id path int true "post id"
+// @Tags			post
+// @Accept			json
+// @Product			json
+// @Router			/posts/{id}/ [delete]
+func (c PostController) Destroy(ctx echo.Context) error {
+	err := c.postService.Delete(ctx.Param("id"))
+	if err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+
+	return response.Response{Code: http.StatusOK}.JSON(ctx)
 }

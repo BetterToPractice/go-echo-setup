@@ -22,3 +22,12 @@ func (s PostService) Query(params *models.PostQueryParams) (*models.PostPaginati
 func (s PostService) Get(id string) (*models.Post, error) {
 	return s.postRepository.Get(id)
 }
+
+func (s PostService) Delete(id string) error {
+	_, err := s.postRepository.Get(id)
+	if err != nil {
+		return err
+	}
+
+	return s.postRepository.Delete(id)
+}

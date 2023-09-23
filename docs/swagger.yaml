@@ -1,6 +1,48 @@
 info:
   contact: {}
 paths:
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: get list several posts
+      produces:
+      - application/json
+      responses: {}
+      summary: List several posts
+      tags:
+      - post
+  /posts/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: perform delete a post
+      parameters:
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: Delete a post
+      tags:
+      - post
+    get:
+      consumes:
+      - application/json
+      description: get detail a post
+      parameters:
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: Detail a post
+      tags:
+      - post
   /users:
     get:
       consumes:
@@ -13,6 +55,22 @@ paths:
       tags:
       - user
   /users/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: perform delete a user by username
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete a User
+      tags:
+      - user
     get:
       consumes:
       - application/json

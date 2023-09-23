@@ -59,3 +59,19 @@ func (c UserController) Detail(ctx echo.Context) error {
 	}
 	return response.Response{Code: http.StatusOK, Data: user}.JSON(ctx)
 }
+
+// Destroy godoc
+//
+//		@Summary		Delete a User
+//		@Description	perform delete a user by username
+//		@Tags			user
+//		@Accept			json
+//		@Produce		json
+//	    @Param			username	path	string	true	"Username"
+//		@Router			/users/{username} [delete]
+func (c UserController) Destroy(ctx echo.Context) error {
+	if err := c.userService.Delete(ctx.Param("username")); err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+	return response.Response{Code: http.StatusNoContent}.JSON(ctx)
+}
