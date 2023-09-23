@@ -5,20 +5,20 @@ import (
 	"github.com/BetterToPractice/go-echo-setup/lib"
 )
 
-type UserRoutes struct {
+type UserRouter struct {
 	handler        lib.HttpHandler
 	userController controllers.UserController
 }
 
-func NewUserRoutes(handler lib.HttpHandler, userController controllers.UserController) UserRoutes {
-	return UserRoutes{
+func NewUserRouter(handler lib.HttpHandler, userController controllers.UserController) UserRouter {
+	return UserRouter{
 		handler:        handler,
 		userController: userController,
 	}
 }
 
-func (a UserRoutes) Setup() {
-	a.handler.Engine.GET("/users", a.userController.List)
-	a.handler.Engine.GET("/users/:username", a.userController.Detail)
-	a.handler.Engine.DELETE("/users/:username", a.userController.Destroy)
+func (r UserRouter) Setup() {
+	r.handler.Engine.GET("/users", r.userController.List)
+	r.handler.Engine.GET("/users/:username", r.userController.Detail)
+	r.handler.Engine.DELETE("/users/:username", r.userController.Destroy)
 }

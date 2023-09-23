@@ -12,7 +12,7 @@ paths:
       summary: List several posts
       tags:
       - post
-  /posts/{id}/:
+  /posts/{id}:
     delete:
       consumes:
       - application/json
@@ -22,7 +22,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       responses: {}
       summary: Delete a post
       tags:
@@ -36,7 +36,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses: {}

@@ -20,7 +20,7 @@
                 "responses": {}
             }
         },
-        "/posts/{id}/": {
+        "/posts/{id}": {
             "get": {
                 "description": "get detail a post",
                 "consumes": [
@@ -35,7 +35,7 @@
                 "summary": "Detail a post",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "post id",
                         "name": "id",
                         "in": "path",
@@ -55,7 +55,7 @@
                 "summary": "Delete a post",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "post id",
                         "name": "id",
                         "in": "path",

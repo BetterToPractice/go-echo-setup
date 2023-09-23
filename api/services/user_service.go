@@ -21,23 +21,23 @@ func NewUserService(logger lib.Logger, userRepository repositories.UserRepositor
 	}
 }
 
-func (c *UserService) Query(params *models.UserQueryParams) (*models.UserPaginationResult, error) {
-	return c.userRepository.Query(params)
+func (s *UserService) Query(params *models.UserQueryParams) (*models.UserPaginationResult, error) {
+	return s.userRepository.Query(params)
 }
 
-func (c *UserService) GetByUsername(username string) (*models.User, error) {
-	return c.userRepository.GetByUsername(username)
+func (s *UserService) GetByUsername(username string) (*models.User, error) {
+	return s.userRepository.GetByUsername(username)
 }
 
-func (c *UserService) Delete(username string) error {
-	user, err := c.userRepository.GetByUsername(username)
+func (s *UserService) Delete(username string) error {
+	user, err := s.userRepository.GetByUsername(username)
 	if err != nil {
 		return err
 	}
 
-	if err := c.profileRepository.DeleteByUserID(strconv.Itoa(int(user.ID))); err != nil {
+	if err := s.profileRepository.DeleteByUserID(strconv.Itoa(int(user.ID))); err != nil {
 		return err
 	}
 
-	return c.userRepository.Delete(username)
+	return s.userRepository.Delete(username)
 }

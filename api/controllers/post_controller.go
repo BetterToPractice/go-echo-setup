@@ -23,8 +23,8 @@ func NewPostController(postService services.PostService) PostController {
 //	@Summary		List several posts
 //	@Description	get list several posts
 //	@Tags			post
-//	@Accept			json
-//	@Produce		json
+//	@Accept			application/json
+//	@Produce		application/json
 //	@Router			/posts [get]
 func (c PostController) List(ctx echo.Context) error {
 	params := new(models.PostQueryParams)
@@ -44,11 +44,11 @@ func (c PostController) List(ctx echo.Context) error {
 //
 //	@Summary		Detail a post
 //	@Description	get detail a post
-//	@Param 			id path int true "post id"
+//	@Param 			id path string true "post id"
 //	@Tags			post
-//	@Accept			json
-//	@Produce		json
-//	@Router			/posts/{id}/ [get]
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Router			/posts/{id} [get]
 func (c PostController) Detail(ctx echo.Context) error {
 	post, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
@@ -61,11 +61,11 @@ func (c PostController) Detail(ctx echo.Context) error {
 //
 // @summary			Delete a post
 // @Description		perform delete a post
-// @Param 			id path int true "post id"
+// @Param 			id path string true "post id"
 // @Tags			post
-// @Accept			json
-// @Product			json
-// @Router			/posts/{id}/ [delete]
+// @Accept			application/json
+// @Product			application/json
+// @Router			/posts/{id} [delete]
 func (c PostController) Destroy(ctx echo.Context) error {
 	err := c.postService.Delete(ctx.Param("id"))
 	if err != nil {

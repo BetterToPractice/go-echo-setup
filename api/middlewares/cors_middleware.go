@@ -19,12 +19,12 @@ func NewCorsMiddleware(handler lib.HttpHandler, logger lib.Logger, config lib.Co
 	}
 }
 
-func (a CorsMiddleware) Setup() {
-	a.logger.Zap.Info("Setup cors middleware")
-	a.handler.Engine.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     a.config.Cors.AllowOrigins,
-		AllowMethods:     a.config.Cors.AllowMethods,
-		AllowHeaders:     a.config.Cors.AllowHeaders,
-		AllowCredentials: a.config.Cors.AllowCredentials,
+func (m CorsMiddleware) Setup() {
+	m.logger.Zap.Info("Setup cors middleware")
+	m.handler.Engine.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     m.config.Cors.AllowOrigins,
+		AllowMethods:     m.config.Cors.AllowMethods,
+		AllowHeaders:     m.config.Cors.AllowHeaders,
+		AllowCredentials: m.config.Cors.AllowCredentials,
 	}))
 }

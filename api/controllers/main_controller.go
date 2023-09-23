@@ -1,20 +1,17 @@
 package controllers
 
 import (
-	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 type MainController struct {
-	db lib.Database
 }
 
-func NewMainController(db lib.Database) MainController {
-	return MainController{
-		db: db,
-	}
+func NewMainController() MainController {
+	return MainController{}
 }
 
 func (c MainController) Index(ctx echo.Context) error {
-	return ctx.String(200, "omedeto")
+	return ctx.Redirect(http.StatusFound, "/swagger/index.html")
 }

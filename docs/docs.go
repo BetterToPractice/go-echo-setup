@@ -31,7 +31,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/posts/{id}/": {
+        "/posts/{id}": {
             "get": {
                 "description": "get detail a post",
                 "consumes": [
@@ -46,7 +46,7 @@ const docTemplate = `{
                 "summary": "Detail a post",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "post id",
                         "name": "id",
                         "in": "path",
@@ -66,7 +66,7 @@ const docTemplate = `{
                 "summary": "Delete a post",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "post id",
                         "name": "id",
                         "in": "path",
