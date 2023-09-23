@@ -1,8 +1,11 @@
 package models
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"gorm.io/gorm"
+	"unsafe"
 )
 
 type User struct {
@@ -28,4 +31,9 @@ type UserQueryParams struct {
 type UserPaginationResult struct {
 	List       Users           `json:"list"`
 	Pagination *dto.Pagination `json:"pagination"`
+}
+
+func HashPassword(password string) string {
+	sum := sha256.Sum256(*(*[]byte)(unsafe.Pointer(&password)))
+	return hex.EncodeToString(sum[:])
 }

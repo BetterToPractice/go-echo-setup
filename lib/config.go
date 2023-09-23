@@ -63,6 +63,7 @@ type Config struct {
 	Database *DatabaseConfig `mapstructure:"Database"`
 	Cors     *CorsConfig     `mapstructure:"Cors"`
 	Swagger  *SwaggerConfig  `mapstructure:"Swagger"`
+	Auth     *AuthConfig     `mapstructure:"Auth"`
 }
 
 type HttpConfig struct {
@@ -102,6 +103,12 @@ type SwaggerConfig struct {
 	Description string `mapstructure:"Description"`
 	Version     string `mapstructure:"Version"`
 	DocUrl      string `mapstructure:"DocUrl"`
+}
+
+type AuthConfig struct {
+	Enable             string   `mapstructure:"Enable"`
+	TokenExpired       int      `mapstructure:"TokenExpired"`
+	IgnorePathPrefixes []string `mapstructure:"IgnorePathPrefixes"`
 }
 
 func (a DatabaseConfig) DSN() string {

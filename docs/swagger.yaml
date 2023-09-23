@@ -1,6 +1,17 @@
 info:
   contact: {}
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login as user to application
+      produces:
+      - application/json
+      responses: {}
+      summary: Login a User
+      tags:
+      - auth
   /posts:
     get:
       consumes:
@@ -43,6 +54,17 @@ paths:
       summary: Detail a post
       tags:
       - post
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: register a new user
+      produces:
+      - application/json
+      responses: {}
+      summary: Register a new User
+      tags:
+      - auth
   /users:
     get:
       consumes:

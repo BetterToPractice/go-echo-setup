@@ -24,3 +24,7 @@ Swagger:
   Description: "Collection of Endpoints"
   Version: "1.0"
   DocUrl: "/swagger/*"
+
+Auth:
+  Enable: true
+  TokenExpired: 7200
