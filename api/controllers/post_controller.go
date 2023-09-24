@@ -72,5 +72,5 @@ func (c PostController) Destroy(ctx echo.Context) error {
 		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
 	}
 
-	return response.Response{Code: http.StatusOK}.JSON(ctx)
+	return response.Response{Code: http.StatusNoContent}.JSON(ctx)
 }
