@@ -28,7 +28,26 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Login a User",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.LoginResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
             }
         },
         "/posts": {
@@ -105,7 +124,26 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Register a new User",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.RegisterResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
             }
         },
         "/users": {
@@ -170,6 +208,34 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "dto.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {}
             }
         }
     }

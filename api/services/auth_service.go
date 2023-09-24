@@ -13,6 +13,7 @@ import (
 
 type AuthService struct {
 	authRepository repositories.AuthRepository
+	userService    UserService
 	config         lib.Config
 	opts           *options
 	db             lib.Database
@@ -26,7 +27,7 @@ type options struct {
 	expired      int
 }
 
-func NewAuthService(authRepository repositories.AuthRepository, config lib.Config, db lib.Database) AuthService {
+func NewAuthService(authRepository repositories.AuthRepository, userService UserService, config lib.Config, db lib.Database) AuthService {
 	signingKey := fmt.Sprintf("jwt:%s", config.Name)
 	opts := &options{
 		issuer:       config.Name,
@@ -42,6 +43,7 @@ func NewAuthService(authRepository repositories.AuthRepository, config lib.Confi
 	}
 	return AuthService{
 		authRepository: authRepository,
+		userService:    userService,
 		opts:           opts,
 		config:         config,
 		db:             db,
@@ -86,4 +88,18 @@ func (s AuthService) Register(register *dto.Register) (*models.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s AuthService) Login(login *dto.Login) (*dto.LoginResponse, error) {
+	user, err := s.userService.Verify(login.Username, login.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	access, err := s.GenerateToken(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.LoginResponse{Access: access}, nil
 }

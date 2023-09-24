@@ -26,6 +26,7 @@ func NewAuthController(authService services.AuthService) AuthController {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Router			/register [post]
+//	@Success		200  {object}  response.Response{data=dto.RegisterResponse}  "ok"
 func (c AuthController) Register(ctx echo.Context) error {
 	register := new(dto.Register)
 	if err := ctx.Bind(register); err != nil {
@@ -59,6 +60,26 @@ func (c AuthController) Register(ctx echo.Context) error {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Router			/login [post]
+//	@Success		200  {object}  response.Response{data=dto.LoginResponse}  "ok"
 func (c AuthController) Login(ctx echo.Context) error {
-	return ctx.String(http.StatusOK, "Login")
+	login := new(dto.Login)
+	if err := ctx.Bind(login); err != nil {
+		return response.Response{
+			Code:    http.StatusBadRequest,
+			Message: err,
+		}.JSON(ctx)
+	}
+
+	token, err := c.authService.Login(login)
+	if err != nil {
+		return response.Response{
+			Code:    http.StatusUnauthorized,
+			Message: err,
+		}.JSON(ctx)
+	}
+
+	return response.Response{
+		Code:    http.StatusOK,
+		Message: token,
+	}.JSON(ctx)
 }

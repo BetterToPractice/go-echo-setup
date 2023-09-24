@@ -1,3 +1,21 @@
+definitions:
+  dto.LoginResponse:
+    properties:
+      access:
+        type: string
+    type: object
+  dto.RegisterResponse:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      message: {}
+    type: object
 info:
   contact: {}
 paths:
@@ -8,7 +26,16 @@ paths:
       description: Login as user to application
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LoginResponse'
+              type: object
       summary: Login a User
       tags:
       - auth
@@ -61,7 +88,16 @@ paths:
       description: register a new user
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RegisterResponse'
+              type: object
       summary: Register a new User
       tags:
       - auth
