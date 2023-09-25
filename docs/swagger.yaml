@@ -4,6 +4,16 @@ definitions:
       access:
         type: string
     type: object
+  dto.PostRequest:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
   dto.RegisterResponse:
     properties:
       email:
@@ -48,6 +58,23 @@ paths:
       - application/json
       responses: {}
       summary: List several posts
+      tags:
+      - post
+    post:
+      consumes:
+      - application/json
+      description: Create a post
+      parameters:
+      - description: Post
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a post
       tags:
       - post
   /posts/{id}:

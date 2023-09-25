@@ -63,10 +63,11 @@ func (c PostController) Detail(ctx echo.Context) error {
 // Create godoc
 //
 //	@Summary		Create a post
-//	@Description	create a post
+//	@Description	Create a post
 //	@Tags			post
 //	@Accept			application/json
 //	@Produce		application/json
+//	@Param 			data body dto.PostRequest true "Post"
 //	@Router			/posts [post]
 func (c PostController) Create(ctx echo.Context) error {
 	user, err := c.authService.Authorize(ctx)

@@ -64,6 +64,31 @@ const docTemplate = `{
                 ],
                 "summary": "List several posts",
                 "responses": {}
+            },
+            "post": {
+                "description": "Create a post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "Create a post",
+                "parameters": [
+                    {
+                        "description": "Post",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostRequest"
+                        }
+                    }
+                ],
+                "responses": {}
             }
         },
         "/posts/{id}": {
@@ -216,6 +241,21 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "title"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
