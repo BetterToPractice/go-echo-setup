@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
+	"github.com/BetterToPractice/go-echo-setup/constants"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/labstack/echo/v4"
 	"time"
 )
 
@@ -102,4 +104,18 @@ func (s AuthService) Login(login *dto.Login) (*dto.LoginResponse, error) {
 	}
 
 	return &dto.LoginResponse{Access: access}, nil
+}
+
+func (s AuthService) Authorize(ctx echo.Context) (*models.User, error) {
+	jwtClaims, ok := ctx.Get(constants.CurrentUser).(*dto.JWTClaims)
+
+	if !ok {
+		return nil, errors.New("unauthorized")
+	}
+
+	if user, err := s.userService.GetByUsername(jwtClaims.Username); err != nil {
+		return nil, err
+	} else {
+		return user, nil
+	}
 }

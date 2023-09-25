@@ -4,6 +4,7 @@ import "go.uber.org/fx"
 
 var Module = fx.Options(
 	fx.Provide(NewCorsMiddleware),
+	fx.Provide(NewAuthMiddleware),
 	fx.Provide(NewGZipMiddleware),
 	fx.Provide(NewSecureMiddleware),
 	fx.Provide(NewMiddlewares),
@@ -19,11 +20,13 @@ func NewMiddlewares(
 	corsMiddleware CorsMiddleware,
 	gzipMiddleware GZipMiddleware,
 	secureMiddleware SecureMiddleware,
+	authMiddleware AuthMiddleware,
 ) Middlewares {
 	return Middlewares{
 		corsMiddleware,
 		gzipMiddleware,
 		secureMiddleware,
+		authMiddleware,
 	}
 }
 

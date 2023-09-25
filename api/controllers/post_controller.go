@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/BetterToPractice/go-echo-setup/api/services"
 	"github.com/BetterToPractice/go-echo-setup/models"
+	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"github.com/BetterToPractice/go-echo-setup/pkg/response"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -10,11 +11,13 @@ import (
 
 type PostController struct {
 	postService services.PostService
+	authService services.AuthService
 }
 
-func NewPostController(postService services.PostService) PostController {
+func NewPostController(postService services.PostService, authService services.AuthService) PostController {
 	return PostController{
 		postService: postService,
+		authService: authService,
 	}
 }
 
@@ -55,6 +58,33 @@ func (c PostController) Detail(ctx echo.Context) error {
 		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
 	}
 	return response.Response{Code: http.StatusOK, Data: post}.JSON(ctx)
+}
+
+// Create godoc
+//
+//	@Summary		Create a post
+//	@Description	create a post
+//	@Tags			post
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Router			/posts [post]
+func (c PostController) Create(ctx echo.Context) error {
+	user, err := c.authService.Authorize(ctx)
+	if err != nil {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+	}
+
+	params := new(dto.PostRequest)
+	if err := ctx.Bind(params); err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+
+	postResponse, err := c.postService.Create(params, user)
+	if err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+
+	return response.Response{Code: http.StatusOK, Data: postResponse}.JSON(ctx)
 }
 
 // Destroy godoc
