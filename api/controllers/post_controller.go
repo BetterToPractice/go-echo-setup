@@ -88,6 +88,39 @@ func (c PostController) Create(ctx echo.Context) error {
 	return response.Response{Code: http.StatusOK, Data: postResponse}.JSON(ctx)
 }
 
+// Update godoc
+//
+//	@Summary		Update a post
+//	@Description	Update a post
+//	@Tags			post
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param 			data body dto.PostRequest true "Post"
+//	@Router			/posts/{id} [patch]
+func (c PostController) Update(ctx echo.Context) error {
+	_, err := c.authService.Authorize(ctx)
+	if err != nil {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+	}
+
+	post, err := c.postService.Get(ctx.Param("id"))
+	if err != nil {
+		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+	}
+
+	params := new(dto.PostUpdateRequest)
+	if err := ctx.Bind(params); err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+
+	postResponse, err := c.postService.Update(post, params)
+	if err != nil {
+		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+	}
+
+	return response.Response{Code: http.StatusOK, Data: postResponse}.JSON(ctx)
+}
+
 // Destroy godoc
 //
 // @summary			Delete a post

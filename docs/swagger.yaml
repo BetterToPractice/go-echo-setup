@@ -108,6 +108,23 @@ paths:
       summary: Detail a post
       tags:
       - post
+    patch:
+      consumes:
+      - application/json
+      description: Update a post
+      parameters:
+      - description: Post
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Update a post
+      tags:
+      - post
   /register:
     post:
       consumes:
