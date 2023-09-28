@@ -33,6 +33,21 @@ func (s PostService) Create(params *dto.PostRequest, user *models.User) (*dto.Po
 	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
 }
 
+func (s PostService) Update(post *models.Post, params *dto.PostUpdateRequest) (*dto.PostResponse, error) {
+	if params.Title != "" {
+		post.Title = params.Title
+	}
+	if params.Body != "" {
+		post.Body = params.Body
+	}
+
+	if err := s.postRepository.Update(post); err != nil {
+		return nil, err
+	}
+
+	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
+}
+
 func (s PostService) Delete(id string) error {
 	_, err := s.postRepository.Get(id)
 	if err != nil {

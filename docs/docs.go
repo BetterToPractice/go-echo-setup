@@ -134,6 +134,31 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            },
+            "patch": {
+                "description": "Update a post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "Update a post",
+                "parameters": [
+                    {
+                        "description": "Post",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostRequest"
+                        }
+                    }
+                ],
+                "responses": {}
             }
         },
         "/register": {

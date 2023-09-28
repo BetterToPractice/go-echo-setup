@@ -53,6 +53,13 @@ func (r PostRepository) Create(post *models.Post) error {
 	return nil
 }
 
+func (r PostRepository) Update(post *models.Post) error {
+	if err := r.db.ORM.Model(post).Updates(post).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r PostRepository) Delete(id string) error {
 	post := new(models.Post)
 	if err := r.db.ORM.Model(post).Where("id = ?", id).Delete(post).Error; err != nil {
