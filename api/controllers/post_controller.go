@@ -76,6 +76,7 @@ func (c PostController) Detail(ctx echo.Context) error {
 //	@Tags			post
 //	@Accept			application/json
 //	@Produce		application/json
+//	@Security 		BearerAuth
 //	@Param 			data body dto.PostRequest true "Post"
 //	@Router			/posts [post]
 func (c PostController) Create(ctx echo.Context) error {
@@ -104,6 +105,7 @@ func (c PostController) Create(ctx echo.Context) error {
 //	@Tags			post
 //	@Accept			application/json
 //	@Produce		application/json
+//	@Security 		BearerAuth
 //	@Param 			data body dto.PostRequest true "Post"
 //	@Router			/posts/{id} [patch]
 func (c PostController) Update(ctx echo.Context) error {
@@ -132,13 +134,14 @@ func (c PostController) Update(ctx echo.Context) error {
 
 // Destroy godoc
 //
-// @summary			Delete a post
-// @Description		perform delete a post
-// @Param 			id path string true "post id"
-// @Tags			post
-// @Accept			application/json
-// @Product			application/json
-// @Router			/posts/{id} [delete]
+//	@summary		Delete a post
+//	@Description	perform delete a post
+//	@Param 			id path string true "post id"
+//	@Tags			post
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Security 		BearerAuth
+//	@Router			/posts/{id} [delete]
 func (c PostController) Destroy(ctx echo.Context) error {
 	post, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {

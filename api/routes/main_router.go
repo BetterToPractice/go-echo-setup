@@ -8,18 +8,15 @@ import (
 type MainRouter struct {
 	handler        lib.HttpHandler
 	mainController controllers.MainController
-	swagger        lib.Swagger
 }
 
-func NewMainRouter(handler lib.HttpHandler, mainController controllers.MainController, swagger lib.Swagger) MainRouter {
+func NewMainRouter(handler lib.HttpHandler, mainController controllers.MainController) MainRouter {
 	return MainRouter{
 		handler:        handler,
 		mainController: mainController,
-		swagger:        swagger,
 	}
 }
 
 func (r MainRouter) Setup() {
-	r.swagger.Setup()
 	r.handler.Engine.GET("", r.mainController.Index)
 }

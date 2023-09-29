@@ -25,6 +25,7 @@ func NewAuthController(authService services.AuthService) AuthController {
 //	@Tags			auth
 //	@Accept			application/json
 //	@Produce		application/json
+//	@Param 			data body dto.Register true "Post"
 //	@Router			/register [post]
 //	@Success		200  {object}  response.Response{data=dto.RegisterResponse}  "ok"
 func (c AuthController) Register(ctx echo.Context) error {
@@ -59,6 +60,7 @@ func (c AuthController) Register(ctx echo.Context) error {
 //	@Tags			auth
 //	@Accept			application/json
 //	@Produce		application/json
+//	@Param 			data body dto.Login true "Post"
 //	@Router			/login [post]
 //	@Success		200  {object}  response.Response{data=dto.LoginResponse}  "ok"
 func (c AuthController) Login(ctx echo.Context) error {
