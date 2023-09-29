@@ -23,5 +23,5 @@ func (r SwaggerRouter) Setup() {
 	docs.SwaggerInfo.Description = r.config.Swagger.Description
 	docs.SwaggerInfo.Version = r.config.Swagger.Version
 
-	r.handler.Engine.GET(r.config.Swagger.DocUrl, echoSwagger.WrapHandler)
+	r.handler.Engine.GET(r.config.Swagger.PathUrl, echoSwagger.WrapHandler)
 }

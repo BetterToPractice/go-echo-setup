@@ -23,7 +23,8 @@ Swagger:
   Title: "Go Echo Setup Docs"
   Description: "Collection of Endpoints"
   Version: "1.0"
-  DocUrl: "/swagger/*"
+  PathUrl: "/swagger/*"
+  DocUrl: "/swagger/index.html"
 
 Auth:
   Enable: true
