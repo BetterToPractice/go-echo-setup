@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/BetterToPractice/go-echo-setup/api/controllers"
 	"github.com/BetterToPractice/go-echo-setup/api/middlewares"
+	"github.com/BetterToPractice/go-echo-setup/api/policies"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/api/routes"
 	"github.com/BetterToPractice/go-echo-setup/api/services"
@@ -15,12 +16,13 @@ import (
 )
 
 var Module = fx.Options(
+	lib.Module,
 	controllers.Module,
 	routes.Module,
-	lib.Module,
-	repositories.Module,
-	services.Module,
 	middlewares.Module,
+	repositories.Module,
+	policies.Module,
+	services.Module,
 	fx.Invoke(bootstrap),
 )
 
