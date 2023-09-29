@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/policies"
 	"github.com/BetterToPractice/go-echo-setup/api/services"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
@@ -11,12 +12,14 @@ import (
 
 type PostController struct {
 	postService services.PostService
+	postPolicy  policies.PostPolicy
 	authService services.AuthService
 }
 
-func NewPostController(postService services.PostService, authService services.AuthService) PostController {
+func NewPostController(postService services.PostService, postPolicy policies.PostPolicy, authService services.AuthService) PostController {
 	return PostController{
 		postService: postService,
+		postPolicy:  postPolicy,
 		authService: authService,
 	}
 }
@@ -57,6 +60,12 @@ func (c PostController) Detail(ctx echo.Context) error {
 	if err != nil {
 		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
 	}
+
+	user, _ := c.authService.Authenticate(ctx)
+	if can, err := c.postPolicy.CanViewDetail(user, post); !can {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+	}
+
 	return response.Response{Code: http.StatusOK, Data: post}.JSON(ctx)
 }
 
@@ -70,8 +79,8 @@ func (c PostController) Detail(ctx echo.Context) error {
 //	@Param 			data body dto.PostRequest true "Post"
 //	@Router			/posts [post]
 func (c PostController) Create(ctx echo.Context) error {
-	user, err := c.authService.Authorize(ctx)
-	if err != nil {
+	user, _ := c.authService.Authenticate(ctx)
+	if can, err := c.postPolicy.CanCreate(user); !can {
 		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
 	}
 
@@ -98,14 +107,14 @@ func (c PostController) Create(ctx echo.Context) error {
 //	@Param 			data body dto.PostRequest true "Post"
 //	@Router			/posts/{id} [patch]
 func (c PostController) Update(ctx echo.Context) error {
-	_, err := c.authService.Authorize(ctx)
-	if err != nil {
-		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
-	}
-
 	post, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
 		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+	}
+
+	user, _ := c.authService.Authenticate(ctx)
+	if can, err := c.postPolicy.CanUpdate(user, post); !can {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
 	}
 
 	params := new(dto.PostUpdateRequest)
@@ -131,8 +140,17 @@ func (c PostController) Update(ctx echo.Context) error {
 // @Product			application/json
 // @Router			/posts/{id} [delete]
 func (c PostController) Destroy(ctx echo.Context) error {
-	err := c.postService.Delete(ctx.Param("id"))
+	post, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
+		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+	}
+
+	user, _ := c.authService.Authenticate(ctx)
+	if can, err := c.postPolicy.CanUpdate(user, post); !can {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+	}
+
+	if err := c.postService.Delete(post); err != nil {
 		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
 	}
 

@@ -60,9 +60,8 @@ func (r PostRepository) Update(post *models.Post) error {
 	return nil
 }
 
-func (r PostRepository) Delete(id string) error {
-	post := new(models.Post)
-	if err := r.db.ORM.Model(post).Where("id = ?", id).Delete(post).Error; err != nil {
+func (r PostRepository) Delete(post *models.Post) error {
+	if err := r.db.ORM.Model(post).Where("id = ?", post.ID).Delete(post).Error; err != nil {
 		return errors.New("invalid, problem with internal")
 	}
 	return nil

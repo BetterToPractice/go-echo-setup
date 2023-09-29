@@ -30,17 +30,11 @@ func (s *UserService) GetByUsername(username string) (*models.User, error) {
 	return s.userRepository.GetByUsername(username)
 }
 
-func (s *UserService) Delete(username string) error {
-	user, err := s.userRepository.GetByUsername(username)
-	if err != nil {
-		return err
-	}
-
+func (s *UserService) Delete(user *models.User) error {
 	if err := s.profileRepository.DeleteByUserID(strconv.Itoa(int(user.ID))); err != nil {
 		return err
 	}
-
-	return s.userRepository.Delete(username)
+	return s.userRepository.Delete(user)
 }
 
 func (s UserService) Verify(username string, password string) (*models.User, error) {

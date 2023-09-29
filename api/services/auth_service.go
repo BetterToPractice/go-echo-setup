@@ -106,7 +106,7 @@ func (s AuthService) Login(login *dto.Login) (*dto.LoginResponse, error) {
 	return &dto.LoginResponse{Access: access}, nil
 }
 
-func (s AuthService) Authorize(ctx echo.Context) (*models.User, error) {
+func (s AuthService) Authenticate(ctx echo.Context) (*models.User, error) {
 	jwtClaims, ok := ctx.Get(constants.CurrentUser).(*dto.JWTClaims)
 
 	if !ok {

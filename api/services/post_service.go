@@ -48,11 +48,6 @@ func (s PostService) Update(post *models.Post, params *dto.PostUpdateRequest) (*
 	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
 }
 
-func (s PostService) Delete(id string) error {
-	_, err := s.postRepository.Get(id)
-	if err != nil {
-		return err
-	}
-
-	return s.postRepository.Delete(id)
+func (s PostService) Delete(post *models.Post) error {
+	return s.postRepository.Delete(post)
 }

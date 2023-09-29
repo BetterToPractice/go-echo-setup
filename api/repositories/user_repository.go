@@ -46,10 +46,8 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 	return user, nil
 }
 
-func (r UserRepository) Delete(username string) error {
-	user := new(models.User)
-
-	if err := r.db.ORM.Model(user).Where("username = ?", username).Delete(user).Error; err != nil {
+func (r UserRepository) Delete(user *models.User) error {
+	if err := r.db.ORM.Model(user).Where("username = ?", user.ID).Delete(user).Error; err != nil {
 		return errors.New("invalid, problem with internal")
 	}
 

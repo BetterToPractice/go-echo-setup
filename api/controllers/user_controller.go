@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/policies"
 	"github.com/BetterToPractice/go-echo-setup/api/services"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/BetterToPractice/go-echo-setup/pkg/response"
@@ -10,11 +11,15 @@ import (
 
 type UserController struct {
 	userService services.UserService
+	userPolicy  policies.UserPolicy
+	authService services.AuthService
 }
 
-func NewUserController(userService services.UserService) UserController {
+func NewUserController(userService services.UserService, authService services.AuthService, userPolicy policies.UserPolicy) UserController {
 	return UserController{
 		userService: userService,
+		userPolicy:  userPolicy,
+		authService: authService,
 	}
 }
 
@@ -67,8 +72,19 @@ func (c UserController) Detail(ctx echo.Context) error {
 //	@Param			username  path  string  true  "Username"
 //	@Router			/users/{username} [delete]
 func (c UserController) Destroy(ctx echo.Context) error {
-	if err := c.userService.Delete(ctx.Param("username")); err != nil {
+	user, err := c.userService.GetByUsername(ctx.Param("username"))
+	if err != nil {
+		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+	}
+
+	loggedInUser, _ := c.authService.Authenticate(ctx)
+	if can, err := c.userPolicy.CanDelete(loggedInUser, user); !can {
+		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+	}
+
+	if err := c.userService.Delete(user); err != nil {
 		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
 	}
+
 	return response.Response{Code: http.StatusNoContent}.JSON(ctx)
 }
