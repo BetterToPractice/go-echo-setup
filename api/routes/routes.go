@@ -7,6 +7,7 @@ var Module = fx.Options(
 	fx.Provide(NewUserRouter),
 	fx.Provide(NewAuthRouter),
 	fx.Provide(NewPostRouter),
+	fx.Provide(NewSwaggerRouter),
 	fx.Provide(NewRoutes),
 )
 
@@ -21,17 +22,19 @@ func NewRoutes(
 	userRouter UserRouter,
 	postRouter PostRouter,
 	authRouter AuthRouter,
+	swaggerRouter SwaggerRouter,
 ) Routes {
 	return Routes{
 		mainRouter,
+		swaggerRouter,
 		userRouter,
 		postRouter,
 		authRouter,
 	}
 }
 
-func (a Routes) Setup() {
-	for _, route := range a {
+func (r Routes) Setup() {
+	for _, route := range r {
 		route.Setup()
 	}
 }

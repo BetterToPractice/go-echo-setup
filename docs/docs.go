@@ -28,6 +28,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Login a User",
+                "parameters": [
+                    {
+                        "description": "Post",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.Login"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "ok",
@@ -66,6 +77,11 @@ const docTemplate = `{
                 "responses": {}
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a post",
                 "consumes": [
                     "application/json"
@@ -116,8 +132,16 @@ const docTemplate = `{
                 "responses": {}
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "perform delete a post",
                 "consumes": [
+                    "application/json"
+                ],
+                "produces": [
                     "application/json"
                 ],
                 "tags": [
@@ -136,6 +160,11 @@ const docTemplate = `{
                 "responses": {}
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a post",
                 "consumes": [
                     "application/json"
@@ -174,6 +203,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Register a new User",
+                "parameters": [
+                    {
+                        "description": "Post",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.Register"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "ok",
@@ -237,6 +277,11 @@ const docTemplate = `{
                 "responses": {}
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "perform delete a user by username",
                 "consumes": [
                     "application/json"
@@ -262,6 +307,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.Login": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.LoginResponse": {
             "type": "object",
             "properties": {
@@ -285,6 +345,25 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.Register": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.RegisterResponse": {
             "type": "object",
             "properties": {
@@ -302,6 +381,13 @@ const docTemplate = `{
                 "data": {},
                 "message": {}
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
