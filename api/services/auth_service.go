@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/constants"
 	"github.com/BetterToPractice/go-echo-setup/lib"
@@ -15,6 +16,7 @@ import (
 
 type AuthService struct {
 	authRepository repositories.AuthRepository
+	authMail       mails.AuthMail
 	userService    UserService
 	config         lib.Config
 	opts           *options
@@ -29,7 +31,7 @@ type options struct {
 	expired      int
 }
 
-func NewAuthService(authRepository repositories.AuthRepository, userService UserService, config lib.Config, db lib.Database) AuthService {
+func NewAuthService(authRepository repositories.AuthRepository, userService UserService, config lib.Config, db lib.Database, authMail mails.AuthMail) AuthService {
 	signingKey := fmt.Sprintf("jwt:%s", config.Name)
 	opts := &options{
 		issuer:       config.Name,
@@ -46,6 +48,7 @@ func NewAuthService(authRepository repositories.AuthRepository, userService User
 	return AuthService{
 		authRepository: authRepository,
 		userService:    userService,
+		authMail:       authMail,
 		opts:           opts,
 		config:         config,
 		db:             db,
@@ -89,6 +92,9 @@ func (s AuthService) Register(register *dto.Register) (*models.User, error) {
 	if err := s.db.ORM.Create(&user).Error; err != nil {
 		return nil, err
 	}
+
+	s.authMail.Register(user)
+
 	return user, nil
 }
 

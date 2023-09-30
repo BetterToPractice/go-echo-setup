@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/BetterToPractice/go-echo-setup/api/controllers"
+	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/middlewares"
 	"github.com/BetterToPractice/go-echo-setup/api/policies"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
@@ -22,6 +23,7 @@ var Module = fx.Options(
 	middlewares.Module,
 	repositories.Module,
 	policies.Module,
+	mails.Module,
 	services.Module,
 	fx.Invoke(bootstrap),
 )

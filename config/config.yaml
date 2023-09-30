@@ -29,3 +29,12 @@ Swagger:
 Auth:
   Enable: true
   TokenExpired: 7200
+
+Mail:
+  Enable: false
+  Host: "smtp.gmail.com"
+  Port: 587
+  User: "example@gmail.com"
+  Password: "secret"
+  UseTLS: true
+  FromEmail: "NoReply <norepy@example.com>"
