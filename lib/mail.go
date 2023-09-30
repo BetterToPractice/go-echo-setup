@@ -9,8 +9,8 @@ import (
 )
 
 type Mail struct {
-	SMTP   *mail.SMTPClient
-	Config *MailConfig
+	smtp   *mail.SMTPClient
+	config *MailConfig
 	logger Logger
 }
 
@@ -39,11 +39,11 @@ func NewMail(config Config, logger Logger) Mail {
 		logger.Zap.Fatalf("Error to open mail [%s] connection: %v", config.Mail.Host, err)
 	}
 
-	return Mail{SMTP: smtp, Config: config.Mail, logger: logger}
+	return Mail{smtp: smtp, config: config.Mail, logger: logger}
 }
 
 func (l Mail) SendMailWithTemplate(mailTemplate MailTemplate) {
-	sender := l.Config.FromEmail
+	sender := l.config.FromEmail
 	if mailTemplate.Sender != "" {
 		sender = mailTemplate.Sender
 	}
@@ -64,7 +64,7 @@ func (l Mail) SendMailAsLog(subject string, body string, receivers []string, sen
 }
 
 func (l Mail) SendMail(subject string, body string, receivers []string, sender string) {
-	if !l.Config.Enable {
+	if !l.config.Enable {
 		l.SendMailAsLog(subject, body, receivers, sender)
 		return
 	}
@@ -74,7 +74,7 @@ func (l Mail) SendMail(subject string, body string, receivers []string, sender s
 		if sender != "" {
 			email.SetFrom(sender).AddTo(to).SetSubject(subject).SetBody(mail.TextHTML, body)
 		} else {
-			email.SetFrom(l.Config.FromEmail).AddTo(to).SetSubject(subject).SetBody(mail.TextHTML, body)
+			email.SetFrom(l.config.FromEmail).AddTo(to).SetSubject(subject).SetBody(mail.TextHTML, body)
 		}
 
 		if email.Error != nil {
@@ -82,7 +82,7 @@ func (l Mail) SendMail(subject string, body string, receivers []string, sender s
 			return
 		}
 
-		err := email.Send(l.SMTP)
+		err := email.Send(l.smtp)
 		if err != nil {
 			l.logger.DesugarZap.Warn(email.Error.Error())
 			return
