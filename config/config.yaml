@@ -32,9 +32,9 @@ Auth:
 
 Mail:
   Enable: false
-  Host: "smtp.gmail.com"
+  Host: smtp.gmail.com
   Port: 587
-  User: "example@gmail.com"
-  Password: "secret"
+  User: example@gmail.com
+  Password: secret
   UseTLS: true
-  FromEmail: "NoReply <norepy@example.com>"
+  FromEmail: NoReply <noreply@example.com>
