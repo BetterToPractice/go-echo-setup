@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
@@ -8,11 +9,13 @@ import (
 
 type PostService struct {
 	postRepository repositories.PostRepository
+	postMail       mails.PostMail
 }
 
-func NewPostService(postRepository repositories.PostRepository) PostService {
+func NewPostService(postRepository repositories.PostRepository, postMail mails.PostMail) PostService {
 	return PostService{
 		postRepository: postRepository,
+		postMail:       postMail,
 	}
 }
 
@@ -29,6 +32,8 @@ func (s PostService) Create(params *dto.PostRequest, user *models.User) (*dto.Po
 	if err := s.postRepository.Create(post); err != nil {
 		return nil, err
 	}
+
+	s.postMail.CreatePost(user, post)
 
 	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
 }

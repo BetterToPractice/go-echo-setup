@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewLogger),
 	fx.Provide(NewDatabase),
 	fx.Provide(NewMigration),
+	fx.Provide(NewMail),
 )

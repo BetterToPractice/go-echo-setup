@@ -42,6 +42,15 @@ var defaultConfig = Config{
 		PathUrl:     "/swagger/*",
 		DocUrl:      "/swagger/index.html",
 	},
+	Mail: &MailConfig{
+		Enable:    false,
+		Host:      "smtp.gmail.com",
+		Port:      587,
+		User:      "user",
+		Password:  "password",
+		UseTLS:    true,
+		FromEmail: "NoReply <norepy@example.com>",
+	},
 }
 
 func NewConfig() Config {
@@ -62,6 +71,7 @@ type Config struct {
 	Http     *HttpConfig     `mapstructure:"Http"`
 	Log      *LogConfig      `mapstructure:"Log"`
 	Database *DatabaseConfig `mapstructure:"Database"`
+	Mail     *MailConfig     `mapstructure:"Mail"`
 	Cors     *CorsConfig     `mapstructure:"Cors"`
 	Swagger  *SwaggerConfig  `mapstructure:"Swagger"`
 	Auth     *AuthConfig     `mapstructure:"Auth"`
@@ -111,6 +121,16 @@ type AuthConfig struct {
 	Enable             string   `mapstructure:"Enable"`
 	TokenExpired       int      `mapstructure:"TokenExpired"`
 	IgnorePathPrefixes []string `mapstructure:"IgnorePathPrefixes"`
+}
+
+type MailConfig struct {
+	Enable    bool   `mapstructure:"Enable"`
+	Host      string `mapstructure:"Host"`
+	Port      int    `mapstructure:"Port"`
+	User      string `mapstructure:"User"`
+	Password  string `mapstructure:"Password"`
+	UseTLS    bool   `mapstructure:"UseTLS"`
+	FromEmail string `mapstructure:"FromEmail"`
 }
 
 func (a DatabaseConfig) DSN() string {
