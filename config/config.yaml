@@ -20,11 +20,11 @@ Cors:
     - "*"
 
 Swagger:
-  Title: "Go Echo Setup Docs"
-  Description: "Collection of Endpoints"
-  Version: "1.0"
-  PathUrl: "/swagger/*"
-  DocUrl: "/swagger/index.html"
+  Title: Go Echo Setup Docs
+  Description: Collection of Endpoints
+  Version: 1.0
+  PathUrl: /swagger/*
+  DocUrl: /swagger/index.html
 
 Auth:
   Enable: true
