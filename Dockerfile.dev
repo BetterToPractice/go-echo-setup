@@ -1,0 +1,40 @@
+FROM golang:1.21.1-alpine as build
+
+ENV GO111MODULE=on \
+    GOOS=linux \
+    GOARCH=amd64
+
+RUN mkdir -p /src
+WORKDIR /src
+
+COPY go.sum go.mod /src/
+RUN go mod download
+
+COPY . .
+
+RUN go install -installsuffix cgo -ldflags="-w -s" && \
+    mkdir -p /app && \
+    cp -r $GOPATH/bin/go-echo-setup /app/
+
+
+FROM alpine:3.18
+
+ENV TZ=Asia/Jakarta \
+    PATH="/app:${PATH}"
+
+RUN apk add --update --no-cache \
+    sqlite \
+    tzdata \
+    ca-certificates \
+    bash \
+    && \
+    cp --remove-destination /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo "${TZ}" > /etc/timezone
+
+RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+
+WORKDIR /app
+COPY --from=build /app /app/
+EXPOSE 5000
+
+CMD ["./go-echo-setup"]
