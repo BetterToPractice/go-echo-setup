@@ -1,10 +1,10 @@
 package services
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/models"
-	"github.com/BetterToPractice/go-echo-setup/models/dto"
 )
 
 type PostService struct {
@@ -19,11 +19,11 @@ func NewPostService(postRepository repositories.PostRepository, postMail mails.P
 	}
 }
 
-func (s PostService) Query(params *models.PostQueryParams) (*models.PostPaginationResult, error) {
+func (s PostService) Query(params *dto.PostQueryParam) (*dto.PostPaginationResponse, error) {
 	return s.postRepository.Query(params)
 }
 
-func (s PostService) Get(id string) (*models.Post, error) {
+func (s PostService) Get(id string) (*models.Post, *dto.PostResponse, error) {
 	return s.postRepository.Get(id)
 }
 
@@ -35,7 +35,10 @@ func (s PostService) Create(params *dto.PostRequest, user *models.User) (*dto.Po
 
 	s.postMail.CreatePost(user, post)
 
-	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
+	resp := &dto.PostResponse{}
+	resp.Serializer(post)
+
+	return resp, nil
 }
 
 func (s PostService) Update(post *models.Post, params *dto.PostUpdateRequest) (*dto.PostResponse, error) {
@@ -50,7 +53,10 @@ func (s PostService) Update(post *models.Post, params *dto.PostUpdateRequest) (*
 		return nil, err
 	}
 
-	return &dto.PostResponse{Title: post.Title, Body: post.Body}, nil
+	resp := &dto.PostResponse{}
+	resp.Serializer(post)
+
+	return resp, nil
 }
 
 func (s PostService) Delete(post *models.Post) error {

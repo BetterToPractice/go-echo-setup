@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	appErr "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
@@ -17,33 +18,35 @@ func NewPostRepository(db lib.Database) PostRepository {
 	}
 }
 
-func (r PostRepository) Query(params *models.PostQueryParams) (*models.PostPaginationResult, error) {
-	db := r.db.ORM.Preload("User").Model(&models.Posts{})
-	list := make(models.Posts, 0)
+func (r PostRepository) Query(params *dto.PostQueryParam) (*dto.PostPaginationResponse, error) {
+	posts := new(models.Posts)
+	db := r.db.ORM.Preload("User").Model(posts)
 
+	var list models.Posts
 	pagination, err := QueryPagination(db, params.PaginationParam, &list)
 	if err != nil {
 		return nil, err
 	}
 
-	qr := &models.PostPaginationResult{
-		Pagination: pagination,
-		List:       list,
-	}
+	qr := &dto.PostPaginationResponse{Pagination: pagination}
+	qr.Serializer(&list)
 
 	return qr, nil
 }
 
-func (r PostRepository) Get(id string) (*models.Post, error) {
+func (r PostRepository) Get(id string) (*models.Post, *dto.PostResponse, error) {
 	post := new(models.Post)
 
 	if ok, err := QueryOne(r.db.ORM.Preload("User").Model(post).Where("id = ?", id), post); err != nil {
-		return nil, err
+		return nil, nil, err
 	} else if !ok {
-		return nil, appErr.RecordNotFound
+		return nil, nil, appErr.RecordNotFound
 	}
 
-	return post, nil
+	resp := &dto.PostResponse{}
+	resp.Serializer(post)
+
+	return post, resp, nil
 }
 
 func (r PostRepository) Create(post *models.Post) error {
