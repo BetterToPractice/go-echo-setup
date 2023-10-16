@@ -32,7 +32,7 @@ type options struct {
 }
 
 func NewAuthService(authRepository repositories.AuthRepository, userService UserService, config lib.Config, db lib.Database, authMail mails.AuthMail) AuthService {
-	signingKey := fmt.Sprintf("jwt:%s", config.Name)
+	signingKey := fmt.Sprintf("jwt:%s", config.Secret)
 	opts := &options{
 		issuer:       config.Name,
 		expired:      config.Auth.TokenExpired,
