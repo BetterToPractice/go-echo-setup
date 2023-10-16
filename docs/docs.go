@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.Login"
+                            "$ref": "#/definitions/dto.LoginRequest"
                         }
                     }
                 ],
@@ -210,7 +210,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.Register"
+                            "$ref": "#/definitions/dto.RegisterRequest"
                         }
                     }
                 ],
@@ -307,7 +307,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.Login": {
+        "dto.LoginRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -345,7 +345,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.Register": {
+        "dto.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",

@@ -83,7 +83,7 @@ func (s AuthService) ParseToken(tokenStr string) (*dto.JWTClaims, error) {
 	return nil, errors.New("invalid token")
 }
 
-func (s AuthService) Register(register *dto.Register) (*models.User, error) {
+func (s AuthService) Register(register *dto.RegisterRequest) (*models.User, error) {
 	user := &models.User{
 		Username: register.Username,
 		Password: models.HashPassword(register.Password),
@@ -98,7 +98,7 @@ func (s AuthService) Register(register *dto.Register) (*models.User, error) {
 	return user, nil
 }
 
-func (s AuthService) Login(login *dto.Login) (*dto.LoginResponse, error) {
+func (s AuthService) Login(login *dto.LoginRequest) (*dto.LoginResponse, error) {
 	user, err := s.userService.Verify(login.Username, login.Password)
 	if err != nil {
 		return nil, err

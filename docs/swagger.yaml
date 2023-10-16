@@ -1,5 +1,5 @@
 definitions:
-  dto.Login:
+  dto.LoginRequest:
     properties:
       password:
         type: string
@@ -24,7 +24,7 @@ definitions:
     - body
     - title
     type: object
-  dto.Register:
+  dto.RegisterRequest:
     properties:
       email:
         type: string
@@ -63,7 +63,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/dto.Login'
+          $ref: '#/definitions/dto.LoginRequest'
       produces:
       - application/json
       responses:
@@ -174,7 +174,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/dto.Register'
+          $ref: '#/definitions/dto.RegisterRequest'
       produces:
       - application/json
       responses:

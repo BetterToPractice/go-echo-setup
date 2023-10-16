@@ -25,16 +25,16 @@ func NewAuthController(authService services.AuthService) AuthController {
 //	@Tags			auth
 //	@Accept			application/json
 //	@Produce		application/json
-//	@Param 			data body dto.Register true "Post"
+//	@Param 			data body dto.RegisterRequest true "Post"
 //	@Router			/register [post]
 //	@Success		200  {object}  response.Response{data=dto.RegisterResponse}  "ok"
 func (c AuthController) Register(ctx echo.Context) error {
-	register := new(dto.Register)
+	register := new(dto.RegisterRequest)
 	if err := ctx.Bind(register); err != nil {
 		return response.Response{
 			Code:    http.StatusBadRequest,
 			Message: err,
-		}.JSONValidationError(dto.Register{}, ctx)
+		}.JSONValidationError(dto.RegisterRequest{}, ctx)
 	}
 
 	_, err := c.authService.Register(register)
@@ -60,16 +60,16 @@ func (c AuthController) Register(ctx echo.Context) error {
 //	@Tags			auth
 //	@Accept			application/json
 //	@Produce		application/json
-//	@Param 			data body dto.Login true "Post"
+//	@Param 			data body dto.LoginRequest true "Post"
 //	@Router			/login [post]
 //	@Success		200  {object}  response.Response{data=dto.LoginResponse}  "ok"
 func (c AuthController) Login(ctx echo.Context) error {
-	login := new(dto.Login)
+	login := new(dto.LoginRequest)
 	if err := ctx.Bind(login); err != nil {
 		return response.Response{
 			Code:    http.StatusBadRequest,
 			Message: err,
-		}.JSONValidationError(dto.Login{}, ctx)
+		}.JSONValidationError(dto.LoginRequest{}, ctx)
 	}
 
 	token, err := c.authService.Login(login)
