@@ -14,6 +14,24 @@ definitions:
       access:
         type: string
     type: object
+  dto.Pagination:
+    properties:
+      current:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dto.PostPaginationResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/dto.PostResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.Pagination'
+    type: object
   dto.PostRequest:
     properties:
       body:
@@ -23,6 +41,17 @@ definitions:
     required:
     - body
     - title
+    type: object
+  dto.PostResponse:
+    properties:
+      body:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserResponse'
     type: object
   dto.RegisterRequest:
     properties:
@@ -44,10 +73,26 @@ definitions:
       username:
         type: string
     type: object
+  dto.UserResponse:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
   response.Response:
     properties:
       data: {}
       message: {}
+    type: object
+  response.ValidationError:
+    properties:
+      field:
+        description: Field name that failed validation
+        type: string
+      message:
+        description: Error message describing the validation failure
+        type: string
     type: object
 info:
   contact: {}
@@ -76,6 +121,19 @@ paths:
                 data:
                   $ref: '#/definitions/dto.LoginResponse'
               type: object
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
+              type: object
       summary: Login a User
       tags:
       - auth
@@ -86,7 +144,29 @@ paths:
       description: get list several posts
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PostPaginationResponse'
+              type: object
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
+              type: object
       summary: List several posts
       tags:
       - post
@@ -103,7 +183,37 @@ paths:
           $ref: '#/definitions/dto.PostRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "201":
+          description: created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PostResponse'
+              type: object
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
+              type: object
+        "403":
+          description: forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       security:
       - BearerAuth: []
       summary: Create a post
@@ -122,7 +232,17 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
+      responses:
+        "204":
+          description: no content
+        "403":
+          description: forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       security:
       - BearerAuth: []
       summary: Delete a post
@@ -140,7 +260,20 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PostResponse'
+              type: object
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       summary: Detail a post
       tags:
       - post
@@ -157,7 +290,32 @@ paths:
           $ref: '#/definitions/dto.PostRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
+              type: object
+        "403":
+          description: forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       security:
       - BearerAuth: []
       summary: Update a post
@@ -186,6 +344,19 @@ paths:
             - properties:
                 data:
                   $ref: '#/definitions/dto.RegisterResponse'
+              type: object
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
               type: object
       summary: Register a new User
       tags:

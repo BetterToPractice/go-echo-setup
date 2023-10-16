@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"gorm.io/gorm"
 )
 
@@ -15,12 +14,3 @@ type Post struct {
 }
 
 type Posts []Post
-
-type PostQueryParams struct {
-	dto.PaginationParam
-}
-
-type PostPaginationResult struct {
-	List       Posts           `json:"list"`
-	Pagination *dto.Pagination `json:"pagination"`
-}

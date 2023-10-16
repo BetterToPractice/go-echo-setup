@@ -28,6 +28,7 @@ func NewAuthController(authService services.AuthService) AuthController {
 //	@Param 			data body dto.RegisterRequest true "Post"
 //	@Router			/register [post]
 //	@Success		200  {object}  response.Response{data=dto.RegisterResponse}  "ok"
+//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors{}}  "bad request"
 func (c AuthController) Register(ctx echo.Context) error {
 	register := new(dto.RegisterRequest)
 	if err := ctx.Bind(register); err != nil {
@@ -63,6 +64,7 @@ func (c AuthController) Register(ctx echo.Context) error {
 //	@Param 			data body dto.LoginRequest true "Post"
 //	@Router			/login [post]
 //	@Success		200  {object}  response.Response{data=dto.LoginResponse}  "ok"
+//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors{}}  "bad request"
 func (c AuthController) Login(ctx echo.Context) error {
 	login := new(dto.LoginRequest)
 	if err := ctx.Bind(login); err != nil {
