@@ -203,6 +203,12 @@
                             ]
                         }
                     },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
                     "403": {
                         "description": "forbidden",
                         "schema": {
@@ -297,6 +303,12 @@
                     "204": {
                         "description": "no content"
                     },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
                     "403": {
                         "description": "forbidden",
                         "schema": {
@@ -368,6 +380,12 @@
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "403": {

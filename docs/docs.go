@@ -214,6 +214,12 @@ const docTemplate = `{
                             ]
                         }
                     },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
                     "403": {
                         "description": "forbidden",
                         "schema": {
@@ -308,6 +314,12 @@ const docTemplate = `{
                     "204": {
                         "description": "no content"
                     },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
                     "403": {
                         "description": "forbidden",
                         "schema": {
@@ -379,6 +391,12 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "403": {

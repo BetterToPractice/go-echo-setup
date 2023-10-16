@@ -206,6 +206,10 @@ paths:
                     type: array
                   type: array
               type: object
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
         "403":
           description: forbidden
           schema:
@@ -235,6 +239,10 @@ paths:
       responses:
         "204":
           description: no content
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
         "403":
           description: forbidden
           schema:
@@ -308,6 +316,10 @@ paths:
                     type: array
                   type: array
               type: object
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
         "403":
           description: forbidden
           schema:
