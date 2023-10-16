@@ -36,24 +36,15 @@ func NewPostController(postService services.PostService, postPolicy policies.Pos
 func (c PostController) List(ctx echo.Context) error {
 	params := new(dto.PostQueryParam)
 	if err := ctx.Bind(params); err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSONValidationError(dto.PostQueryParam{}, ctx)
+		return response.BadRequest{Message: err, Req: dto.PostQueryParam{}}.JSON(ctx)
 	}
 
 	qr, err := c.postService.Query(params)
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSON(ctx)
+		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{
-		Code: http.StatusOK,
-		Data: qr,
-	}.JSON(ctx)
+	return response.Response{Code: http.StatusOK, Data: qr}.JSON(ctx)
 }
 
 // Detail godoc
@@ -70,15 +61,15 @@ func (c PostController) List(ctx echo.Context) error {
 func (c PostController) Detail(ctx echo.Context) error {
 	post, resp, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
-		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+		return response.NotFound{Message: err}.JSON(ctx)
 	}
 
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanViewDetail(user, post); !can {
-		return response.Response{Code: http.StatusForbidden, Message: err}.JSON(ctx)
+		return response.PolicyResponse{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{Code: http.StatusOK, Data: resp}.JSON(ctx)
+	return response.Response{Data: resp}.JSON(ctx)
 }
 
 // Create godoc
@@ -94,36 +85,25 @@ func (c PostController) Detail(ctx echo.Context) error {
 //	@Success		201  {object}  response.Response{data=dto.PostResponse}  "created"
 //	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors}  "bad request"
 //	@Failure		404  {object}  response.Response  "not found"
+//	@Failure		401  {object}  response.Response  "unauthorized"
 //	@Failure		403  {object}  response.Response  "forbidden"
 func (c PostController) Create(ctx echo.Context) error {
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanCreate(user); !can {
-		return response.Response{
-			Code:    http.StatusForbidden,
-			Message: err,
-		}.JSON(ctx)
+		return response.PolicyResponse{Message: err}.JSON(ctx)
 	}
 
 	params := new(dto.PostRequest)
 	if err := ctx.Bind(params); err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSONValidationError(dto.PostRequest{}, ctx)
+		return response.BadRequest{Req: dto.PostRequest{}, Message: err}.JSON(ctx)
 	}
 
 	postResponse, err := c.postService.Create(params, user)
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSON(ctx)
+		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{
-		Code: http.StatusOK,
-		Data: postResponse,
-	}.JSON(ctx)
+	return response.Response{Code: http.StatusCreated, Data: postResponse}.JSON(ctx)
 }
 
 // Update godoc
@@ -139,44 +119,30 @@ func (c PostController) Create(ctx echo.Context) error {
 //	@Success		200  {object}  response.Response  "ok"
 //	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors}  "bad request"
 //	@Failure		404  {object}  response.Response  "not found"
+//	@Failure		401  {object}  response.Response  "unauthorized"
 //	@Failure		403  {object}  response.Response  "forbidden"
 func (c PostController) Update(ctx echo.Context) error {
 	post, _, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusNotFound,
-			Message: err,
-		}.JSON(ctx)
+		return response.NotFound{Message: err}.JSON(ctx)
 	}
 
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanUpdate(user, post); !can {
-		return response.Response{
-			Code:    http.StatusForbidden,
-			Message: err,
-		}.JSON(ctx)
+		return response.PolicyResponse{Message: err}.JSON(ctx)
 	}
 
 	params := new(dto.PostUpdateRequest)
 	if err := ctx.Bind(params); err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSONValidationError(dto.PostUpdateRequest{}, ctx)
+		return response.BadRequest{Req: dto.PostUpdateRequest{}, Message: err}.JSON(ctx)
 	}
 
 	resp, err := c.postService.Update(post, params)
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSON(ctx)
+		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{
-		Code: http.StatusOK,
-		Data: resp,
-	}.JSON(ctx)
+	return response.Response{Data: resp}.JSON(ctx)
 }
 
 // Destroy godoc
@@ -191,20 +157,21 @@ func (c PostController) Update(ctx echo.Context) error {
 //	@Router			/posts/{id} [delete]
 //	@Success		204  {object}  nil  "no content"
 //	@Failure		404  {object}  response.Response  "not found"
+//	@Failure		401  {object}  response.Response  "unauthorized"
 //	@Failure		403  {object}  response.Response  "forbidden"
 func (c PostController) Destroy(ctx echo.Context) error {
 	post, _, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
-		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+		return response.NotFound{Message: err}.JSON(ctx)
 	}
 
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanUpdate(user, post); !can {
-		return response.Response{Code: http.StatusForbidden, Message: err}.JSON(ctx)
+		return response.PolicyResponse{Message: err}.JSON(ctx)
 	}
 
 	if err := c.postService.Delete(post); err != nil {
-		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
 	return response.Response{Code: http.StatusNoContent}.JSON(ctx)

@@ -1,6 +1,8 @@
 package response
 
 import (
+	"errors"
+	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -11,6 +13,56 @@ type Response struct {
 	Code    int         `json:"-"`
 	Data    interface{} `json:"data,omitempty"`
 	Message interface{} `json:"message"`
+}
+
+type BadRequest struct {
+	Req     interface{}
+	Message interface{} `json:"message"`
+}
+
+type NotFound struct {
+	Message interface{} `json:"message"`
+}
+
+type PolicyResponse struct {
+	Message error `json:"message"`
+}
+
+func (r PolicyResponse) JSON(ctx echo.Context) error {
+	resp := Response{Code: http.StatusUnauthorized}
+
+	if errors.Is(r.Message, appError.Forbidden) {
+		resp.Code = http.StatusForbidden
+	}
+
+	return resp.JSON(ctx)
+}
+
+func (r BadRequest) JSON(ctx echo.Context) error {
+	resp := Response{Code: http.StatusBadRequest}
+
+	if err, ok := r.Message.(validator.ValidationErrors); ok && err != nil {
+		var validationErrors []ValidationError
+		v := reflect.TypeOf(r.Req)
+
+		for _, e := range err {
+			field, _ := v.FieldByName(e.Field())
+			validationErrors = append(validationErrors, ValidationError{
+				Field:   field.Tag.Get("json"),
+				Message: e.Tag(),
+			})
+		}
+		resp.Data = validationErrors
+		resp.Message = http.StatusText(resp.Code)
+		return resp.JSON(ctx)
+	}
+
+	return resp.JSON(ctx)
+}
+
+func (r NotFound) JSON(ctx echo.Context) error {
+	resp := Response{Code: http.StatusNotFound}
+	return resp.JSON(ctx)
 }
 
 type ValidationError struct {
