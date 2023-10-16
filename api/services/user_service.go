@@ -1,8 +1,8 @@
 package services
 
 import (
-	"errors"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
+	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"strconv"
@@ -40,7 +40,7 @@ func (s *UserService) Delete(user *models.User) error {
 func (s UserService) Verify(username string, password string) (*models.User, error) {
 	user, err := s.userRepository.GetByUsername(username)
 	if err != nil || user.Password != models.HashPassword(password) {
-		return nil, errors.New("username or password not match")
+		return nil, appError.UsernameOrPasswordNotMatch
 	}
 	return user, nil
 }

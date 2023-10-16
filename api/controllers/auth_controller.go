@@ -34,7 +34,7 @@ func (c AuthController) Register(ctx echo.Context) error {
 		return response.Response{
 			Code:    http.StatusBadRequest,
 			Message: err,
-		}.JSON(ctx)
+		}.JSONValidationError(dto.Register{}, ctx)
 	}
 
 	_, err := c.authService.Register(register)
@@ -46,7 +46,7 @@ func (c AuthController) Register(ctx echo.Context) error {
 	}
 
 	return response.Response{
-		Message: dto.RegisterResponse{
+		Data: dto.RegisterResponse{
 			Username: register.Username,
 			Email:    register.Email,
 		},
@@ -69,7 +69,7 @@ func (c AuthController) Login(ctx echo.Context) error {
 		return response.Response{
 			Code:    http.StatusBadRequest,
 			Message: err,
-		}.JSON(ctx)
+		}.JSONValidationError(dto.Login{}, ctx)
 	}
 
 	token, err := c.authService.Login(login)
@@ -81,7 +81,7 @@ func (c AuthController) Login(ctx echo.Context) error {
 	}
 
 	return response.Response{
-		Code:    http.StatusOK,
-		Message: token,
+		Code: http.StatusOK,
+		Data: token,
 	}.JSON(ctx)
 }

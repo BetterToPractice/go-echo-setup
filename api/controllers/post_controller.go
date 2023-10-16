@@ -82,20 +82,32 @@ func (c PostController) Detail(ctx echo.Context) error {
 func (c PostController) Create(ctx echo.Context) error {
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanCreate(user); !can {
-		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusUnauthorized,
+			Message: err,
+		}.JSON(ctx)
 	}
 
 	params := new(dto.PostRequest)
 	if err := ctx.Bind(params); err != nil {
-		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusBadRequest,
+			Message: err,
+		}.JSONValidationError(dto.PostRequest{}, ctx)
 	}
 
 	postResponse, err := c.postService.Create(params, user)
 	if err != nil {
-		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusBadRequest,
+			Message: err,
+		}.JSON(ctx)
 	}
 
-	return response.Response{Code: http.StatusOK, Data: postResponse}.JSON(ctx)
+	return response.Response{
+		Code: http.StatusOK,
+		Data: postResponse,
+	}.JSON(ctx)
 }
 
 // Update godoc
@@ -111,25 +123,40 @@ func (c PostController) Create(ctx echo.Context) error {
 func (c PostController) Update(ctx echo.Context) error {
 	post, err := c.postService.Get(ctx.Param("id"))
 	if err != nil {
-		return response.Response{Code: http.StatusNotFound, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusNotFound,
+			Message: err,
+		}.JSON(ctx)
 	}
 
 	user, _ := c.authService.Authenticate(ctx)
 	if can, err := c.postPolicy.CanUpdate(user, post); !can {
-		return response.Response{Code: http.StatusUnauthorized, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusUnauthorized,
+			Message: err,
+		}.JSON(ctx)
 	}
 
 	params := new(dto.PostUpdateRequest)
 	if err := ctx.Bind(params); err != nil {
-		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusBadRequest,
+			Message: err,
+		}.JSONValidationError(dto.PostUpdateRequest{}, ctx)
 	}
 
 	postResponse, err := c.postService.Update(post, params)
 	if err != nil {
-		return response.Response{Code: http.StatusBadRequest, Message: err}.JSON(ctx)
+		return response.Response{
+			Code:    http.StatusBadRequest,
+			Message: err,
+		}.JSON(ctx)
 	}
 
-	return response.Response{Code: http.StatusOK, Data: postResponse}.JSON(ctx)
+	return response.Response{
+		Code: http.StatusOK,
+		Data: postResponse,
+	}.JSON(ctx)
 }
 
 // Destroy godoc
