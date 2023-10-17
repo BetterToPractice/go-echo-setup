@@ -5,7 +5,6 @@ import (
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"github.com/BetterToPractice/go-echo-setup/pkg/response"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type AuthController struct {
@@ -28,22 +27,16 @@ func NewAuthController(authService services.AuthService) AuthController {
 //	@Param 			data body dto.RegisterRequest true "Post"
 //	@Router			/register [post]
 //	@Success		200  {object}  response.Response{data=dto.RegisterResponse}  "ok"
-//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors{}}  "bad request"
+//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors}  "bad request"
 func (c AuthController) Register(ctx echo.Context) error {
 	register := new(dto.RegisterRequest)
 	if err := ctx.Bind(register); err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSONValidationError(dto.RegisterRequest{}, ctx)
+		return response.BadRequest{Req: dto.RegisterRequest{}, Message: err}.JSON(ctx)
 	}
 
 	_, err := c.authService.Register(register)
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSON(ctx)
+		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
 	return response.Response{
@@ -64,26 +57,17 @@ func (c AuthController) Register(ctx echo.Context) error {
 //	@Param 			data body dto.LoginRequest true "Post"
 //	@Router			/login [post]
 //	@Success		200  {object}  response.Response{data=dto.LoginResponse}  "ok"
-//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors{}}  "bad request"
+//	@Failure		400  {object}  response.Response{data=[]response.ValidationErrors}  "bad request"
 func (c AuthController) Login(ctx echo.Context) error {
 	login := new(dto.LoginRequest)
 	if err := ctx.Bind(login); err != nil {
-		return response.Response{
-			Code:    http.StatusBadRequest,
-			Message: err,
-		}.JSONValidationError(dto.LoginRequest{}, ctx)
+		return response.BadRequest{Req: dto.LoginRequest{}, Message: err}.JSON(ctx)
 	}
 
 	token, err := c.authService.Login(login)
 	if err != nil {
-		return response.Response{
-			Code:    http.StatusUnauthorized,
-			Message: err,
-		}.JSON(ctx)
+		return response.PolicyResponse{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{
-		Code: http.StatusOK,
-		Data: token,
-	}.JSON(ctx)
+	return response.Response{Data: token}.JSON(ctx)
 }
