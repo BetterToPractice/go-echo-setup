@@ -28,15 +28,29 @@ type PolicyResponse struct {
 	Message error `json:"message"`
 }
 
-func (r PolicyResponse) JSON(ctx echo.Context) error {
-	resp := Response{
-		Code:    http.StatusUnauthorized,
-		Message: r.Message,
+type ValidationError struct {
+	Field   string `json:"field"`   // Field name that failed validation
+	Message string `json:"message"` // Error message describing the validation failure
+}
+
+type ValidationErrors []ValidationError
+
+func (r Response) JSON(ctx echo.Context) error {
+	if r.Code == 0 {
+		r.Code = http.StatusOK
 	}
-	if errors.Is(r.Message, appError.Forbidden) {
-		resp.Code = http.StatusForbidden
+	if r.Message == "" || r.Message == nil {
+		r.Message = http.StatusText(r.Code)
 	}
-	return resp.JSON(ctx)
+
+	if err, ok := r.Message.(error); ok {
+		if errors.Is(err, appError.DatabaseInternalError) {
+			r.Code = http.StatusInternalServerError
+		}
+		r.Message = err.Error()
+	}
+
+	return ctx.JSON(r.Code, r)
 }
 
 func (r BadRequest) JSON(ctx echo.Context) error {
@@ -66,53 +80,13 @@ func (r NotFound) JSON(ctx echo.Context) error {
 	return resp.JSON(ctx)
 }
 
-type ValidationError struct {
-	Field   string `json:"field"`   // Field name that failed validation
-	Message string `json:"message"` // Error message describing the validation failure
-}
-
-type ValidationErrors []ValidationError
-
-func (r Response) JSONValidationError(dto interface{}, ctx echo.Context) error {
-	if r.Code == 0 {
-		r.Code = http.StatusBadRequest
+func (r PolicyResponse) JSON(ctx echo.Context) error {
+	resp := Response{
+		Code:    http.StatusUnauthorized,
+		Message: r.Message,
 	}
-
-	if err, ok := r.Message.(validator.ValidationErrors); ok && err != nil {
-		var validationErrors []ValidationError
-		v := reflect.TypeOf(dto)
-
-		for _, e := range err {
-			field, _ := v.FieldByName(e.Field())
-			validationErrors = append(validationErrors, ValidationError{
-				Field:   field.Tag.Get("json"),
-				Message: e.Tag(),
-			})
-		}
-
-		r.Message = http.StatusText(r.Code)
-		r.Data = validationErrors
-
-		return ctx.JSON(r.Code, r)
+	if errors.Is(r.Message, appError.Forbidden) {
+		resp.Code = http.StatusForbidden
 	}
-
-	return r.JSON(ctx)
-}
-
-func (r Response) JSON(ctx echo.Context) error {
-	if r.Code == 0 {
-		r.Code = http.StatusOK
-	}
-	if r.Message == "" || r.Message == nil {
-		r.Message = http.StatusText(r.Code)
-	}
-
-	if err, ok := r.Message.(error); ok {
-		if errors.Is(err, appError.DatabaseInternalError) {
-			r.Code = http.StatusInternalServerError
-		}
-		r.Message = err.Error()
-	}
-
-	return ctx.JSON(r.Code, r)
+	return resp.JSON(ctx)
 }
