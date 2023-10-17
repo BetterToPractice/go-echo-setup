@@ -19,3 +19,7 @@ var (
 var (
 	PostNotFound = errors.New("post not found")
 )
+
+var (
+	UserNotFound = errors.New("user not found")
+)

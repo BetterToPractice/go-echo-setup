@@ -51,7 +51,21 @@ definitions:
       title:
         type: string
       user:
-        $ref: '#/definitions/dto.UserResponse'
+        $ref: '#/definitions/dto.PostUserResponse'
+    type: object
+  dto.PostUserResponse:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  dto.ProfileResponse:
+    properties:
+      gender:
+        type: string
+      phone_number:
+        type: string
     type: object
   dto.RegisterRequest:
     properties:
@@ -73,10 +87,21 @@ definitions:
       username:
         type: string
     type: object
+  dto.UserPaginationResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/dto.UserResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.Pagination'
+    type: object
   dto.UserResponse:
     properties:
-      id:
-        type: integer
+      email:
+        type: string
+      profile:
+        $ref: '#/definitions/dto.ProfileResponse'
       username:
         type: string
     type: object
@@ -380,7 +405,29 @@ paths:
       description: get list several users
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserPaginationResponse'
+              type: object
+        "400":
+          description: bad request
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    items:
+                      $ref: '#/definitions/response.ValidationError'
+                    type: array
+                  type: array
+              type: object
       summary: List several users
       tags:
       - user
@@ -397,7 +444,21 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
+      responses:
+        "204":
+          description: no content
+        "401":
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       security:
       - BearerAuth: []
       summary: Delete a User
@@ -415,7 +476,20 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: ok
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserResponse'
+              type: object
+        "404":
+          description: not found
+          schema:
+            $ref: '#/definitions/response.Response'
       summary: Get a User
       tags:
       - user
