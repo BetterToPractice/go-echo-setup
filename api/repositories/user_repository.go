@@ -23,7 +23,7 @@ func (r UserRepository) Query(params *models.UserQueryParams) (*models.UserPagin
 
 	pagination, err := QueryPagination(db, params.PaginationParam, &list)
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(appErr.DatabaseInternalError, err)
 	}
 
 	qr := &models.UserPaginationResult{
@@ -38,9 +38,9 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 	user := new(models.User)
 
 	if ok, err := QueryOne(r.db.ORM.Model(user).Where("username = ?", username), user); err != nil {
-		return nil, err
+		return nil, errors.Join(appErr.DatabaseInternalError, err)
 	} else if !ok {
-		return nil, appErr.RecordNotFound
+		return nil, appErr.DatabaseRecordNotFound
 	}
 
 	return user, nil
@@ -48,7 +48,7 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 
 func (r UserRepository) Delete(user *models.User) error {
 	if err := r.db.ORM.Model(user).Where("username = ?", user.ID).Delete(user).Error; err != nil {
-		return errors.New("invalid, problem with internal")
+		return errors.Join(appErr.DatabaseInternalError, err)
 	}
 
 	return nil

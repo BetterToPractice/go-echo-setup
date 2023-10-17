@@ -5,7 +5,6 @@ import "errors"
 var (
 	DatabaseInternalError  = errors.New("internal error")
 	DatabaseRecordNotFound = errors.New("record not found")
-	RecordNotFound         = errors.New("record not found")
 )
 
 var (
