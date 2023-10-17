@@ -1,11 +1,11 @@
 package repositories
 
 import (
+	"errors"
 	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	appErr "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
-	"github.com/pkg/errors"
 )
 
 type PostRepository struct {
@@ -25,7 +25,7 @@ func (r PostRepository) Query(params *dto.PostQueryParam) (*dto.PostPaginationRe
 	var list models.Posts
 	pagination, err := QueryPagination(db, params.PaginationParam, &list)
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(appErr.DatabaseInternalError, err)
 	}
 
 	qr := &dto.PostPaginationResponse{Pagination: pagination}
@@ -38,9 +38,9 @@ func (r PostRepository) Get(id string) (*models.Post, *dto.PostResponse, error) 
 	post := new(models.Post)
 
 	if ok, err := QueryOne(r.db.ORM.Preload("User").Model(post).Where("id = ?", id), post); err != nil {
-		return nil, nil, err
+		return nil, nil, errors.Join(appErr.DatabaseInternalError, err)
 	} else if !ok {
-		return nil, nil, appErr.RecordNotFound
+		return nil, nil, appErr.DatabaseRecordNotFound
 	}
 
 	resp := &dto.PostResponse{}
@@ -51,21 +51,21 @@ func (r PostRepository) Get(id string) (*models.Post, *dto.PostResponse, error) 
 
 func (r PostRepository) Create(post *models.Post) error {
 	if err := r.db.ORM.Model(post).Create(post).Error; err != nil {
-		return err
+		return errors.Join(appErr.DatabaseInternalError, err)
 	}
 	return nil
 }
 
 func (r PostRepository) Update(post *models.Post) error {
 	if err := r.db.ORM.Model(post).Updates(post).Error; err != nil {
-		return err
+		return errors.Join(appErr.DatabaseInternalError, err)
 	}
 	return nil
 }
 
 func (r PostRepository) Delete(post *models.Post) error {
 	if err := r.db.ORM.Model(post).Where("id = ?", post.ID).Delete(post).Error; err != nil {
-		return errors.New("invalid, problem with internal")
+		return errors.Join(appErr.DatabaseInternalError, err)
 	}
 	return nil
 }
