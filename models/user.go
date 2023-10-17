@@ -3,7 +3,6 @@ package models
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"gorm.io/gorm"
 	"unsafe"
 )
@@ -23,19 +22,6 @@ type Users = []User
 func (m *User) BeforeCreate(_ *gorm.DB) (err error) {
 	m.Password = HashPassword(m.Password)
 	return
-}
-
-type UserIndexResult struct {
-	Results []User `json:"list"`
-}
-
-type UserQueryParams struct {
-	dto.PaginationParam
-}
-
-type UserPaginationResult struct {
-	List       Users           `json:"list"`
-	Pagination *dto.Pagination `json:"pagination"`
 }
 
 func HashPassword(password string) string {

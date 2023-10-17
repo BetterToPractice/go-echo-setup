@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	appError "github.com/BetterToPractice/go-echo-setup/errors"
@@ -23,12 +24,16 @@ func NewUserService(logger lib.Logger, userRepository repositories.UserRepositor
 	}
 }
 
-func (s *UserService) Query(params *models.UserQueryParams) (*models.UserPaginationResult, error) {
+func (s *UserService) Query(params *dto.UserQueryParam) (*dto.UserPaginationResponse, error) {
 	return s.userRepository.Query(params)
 }
 
 func (s *UserService) GetByUsername(username string) (*models.User, error) {
-	return s.userRepository.GetByUsername(username)
+	user, err := s.userRepository.GetByUsername(username)
+	if errors.Is(err, appError.DatabaseInternalError) {
+		return nil, appError.UserNotFound
+	}
+	return user, err
 }
 
 func (s UserService) Register(params *dto.RegisterRequest) (*models.User, error) {
@@ -45,7 +50,7 @@ func (s UserService) Register(params *dto.RegisterRequest) (*models.User, error)
 
 func (s *UserService) Delete(user *models.User) error {
 	if err := s.profileRepository.DeleteByUserID(strconv.Itoa(int(user.ID))); err != nil {
-		return err
+		return errors.Join(appError.DatabaseInternalError, err)
 	}
 	return s.userRepository.Delete(user)
 }
