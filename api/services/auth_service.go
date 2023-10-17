@@ -6,6 +6,7 @@ import (
 	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/constants"
+	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
 	"github.com/BetterToPractice/go-echo-setup/models/dto"
@@ -114,13 +115,12 @@ func (s AuthService) Login(login *dto.LoginRequest) (*dto.LoginResponse, error) 
 
 func (s AuthService) Authenticate(ctx echo.Context) (*models.User, error) {
 	jwtClaims, ok := ctx.Get(constants.CurrentUser).(*dto.JWTClaims)
-
 	if !ok {
-		return nil, errors.New("unauthorized")
+		return nil, appError.Unauthorized
 	}
 
 	if user, err := s.userService.GetByUsername(jwtClaims.Username); err != nil {
-		return nil, err
+		return nil, appError.Unauthorized
 	} else {
 		return user, nil
 	}

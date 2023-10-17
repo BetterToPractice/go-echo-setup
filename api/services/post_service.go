@@ -1,9 +1,11 @@
 package services
 
 import (
+	"errors"
 	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
+	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/models"
 )
 
@@ -24,7 +26,11 @@ func (s PostService) Query(params *dto.PostQueryParam) (*dto.PostPaginationRespo
 }
 
 func (s PostService) Get(id string) (*models.Post, *dto.PostResponse, error) {
-	return s.postRepository.Get(id)
+	post, resp, err := s.postRepository.Get(id)
+	if err != nil && errors.Is(err, appError.DatabaseRecordNotFound) {
+		err = appError.PostNotFound
+	}
+	return post, resp, err
 }
 
 func (s PostService) Create(params *dto.PostRequest, user *models.User) (*dto.PostResponse, error) {
