@@ -3,13 +3,13 @@ package services
 import (
 	"errors"
 	"fmt"
+	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/mails"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	"github.com/BetterToPractice/go-echo-setup/constants"
 	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
 	"github.com/BetterToPractice/go-echo-setup/models"
-	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"time"
@@ -56,8 +56,10 @@ func NewAuthService(authRepository repositories.AuthRepository, userService User
 	}
 }
 
-func (s AuthService) GenerateToken(user *models.User) (string, error) {
+func (s AuthService) GenerateToken(user *models.User) (*dto.JWTResponse, error) {
 	now := time.Now()
+	resp := &dto.JWTResponse{}
+
 	claims := &dto.JWTClaims{
 		ID:       user.ID,
 		Username: user.Username,
@@ -68,7 +70,13 @@ func (s AuthService) GenerateToken(user *models.User) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	return token.SignedString(s.opts.signedKey)
+	access, err := token.SignedString(s.opts.signedKey)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Serializer(access)
+	return resp, nil
 }
 
 func (s AuthService) ParseToken(tokenStr string) (*dto.JWTClaims, error) {
@@ -84,19 +92,18 @@ func (s AuthService) ParseToken(tokenStr string) (*dto.JWTClaims, error) {
 	return nil, errors.New("invalid token")
 }
 
-func (s AuthService) Register(register *dto.RegisterRequest) (*models.User, error) {
-	user := &models.User{
-		Username: register.Username,
-		Password: models.HashPassword(register.Password),
-		Email:    register.Email,
-	}
-	if err := s.db.ORM.Create(&user).Error; err != nil {
+func (s AuthService) Register(register *dto.RegisterRequest) (*dto.RegisterResponse, error) {
+	user, err := s.userService.Register(register)
+	if err != nil {
 		return nil, err
 	}
 
 	s.authMail.Register(user)
 
-	return user, nil
+	resp := &dto.RegisterResponse{}
+	resp.Serializer(user)
+
+	return resp, nil
 }
 
 func (s AuthService) Login(login *dto.LoginRequest) (*dto.LoginResponse, error) {
@@ -110,7 +117,10 @@ func (s AuthService) Login(login *dto.LoginRequest) (*dto.LoginResponse, error) 
 		return nil, err
 	}
 
-	return &dto.LoginResponse{Access: access}, nil
+	resp := &dto.LoginResponse{}
+	resp.Serializer(access.Access)
+
+	return resp, nil
 }
 
 func (s AuthService) Authenticate(ctx echo.Context) (*models.User, error) {

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/repositories"
 	appError "github.com/BetterToPractice/go-echo-setup/errors"
 	"github.com/BetterToPractice/go-echo-setup/lib"
@@ -28,6 +29,18 @@ func (s *UserService) Query(params *models.UserQueryParams) (*models.UserPaginat
 
 func (s *UserService) GetByUsername(username string) (*models.User, error) {
 	return s.userRepository.GetByUsername(username)
+}
+
+func (s UserService) Register(params *dto.RegisterRequest) (*models.User, error) {
+	user := &models.User{
+		Username: params.Username,
+		Password: params.Password,
+		Email:    params.Email,
+	}
+	if err := s.userRepository.Create(user); err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (s *UserService) Delete(user *models.User) error {
