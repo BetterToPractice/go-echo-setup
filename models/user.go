@@ -20,6 +20,11 @@ type User struct {
 
 type Users = []User
 
+func (m *User) BeforeCreate(_ *gorm.DB) (err error) {
+	m.Password = HashPassword(m.Password)
+	return
+}
+
 type UserIndexResult struct {
 	Results []User `json:"list"`
 }

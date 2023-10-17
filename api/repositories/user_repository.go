@@ -46,6 +46,13 @@ func (r UserRepository) GetByUsername(username string) (*models.User, error) {
 	return user, nil
 }
 
+func (r UserRepository) Create(user *models.User) error {
+	if err := r.db.ORM.Model(user).Create(user).Error; err != nil {
+		return errors.Join(appErr.DatabaseInternalError, err)
+	}
+	return nil
+}
+
 func (r UserRepository) Delete(user *models.User) error {
 	if err := r.db.ORM.Model(user).Where("username = ?", user.ID).Delete(user).Error; err != nil {
 		return errors.Join(appErr.DatabaseInternalError, err)

@@ -11,3 +11,7 @@ type JWTClaims struct {
 	Username string
 	jwt.RegisteredClaims
 }
+
+func (r *JWTResponse) Serializer(access string) {
+	r.Access = access
+}

@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"github.com/BetterToPractice/go-echo-setup/api/dto"
 	"github.com/BetterToPractice/go-echo-setup/api/services"
-	"github.com/BetterToPractice/go-echo-setup/models/dto"
 	"github.com/BetterToPractice/go-echo-setup/pkg/response"
 	"github.com/labstack/echo/v4"
 )
@@ -34,17 +34,12 @@ func (c AuthController) Register(ctx echo.Context) error {
 		return response.BadRequest{Req: dto.RegisterRequest{}, Message: err}.JSON(ctx)
 	}
 
-	_, err := c.authService.Register(register)
+	resp, err := c.authService.Register(register)
 	if err != nil {
 		return response.BadRequest{Message: err}.JSON(ctx)
 	}
 
-	return response.Response{
-		Data: dto.RegisterResponse{
-			Username: register.Username,
-			Email:    register.Email,
-		},
-	}.JSON(ctx)
+	return response.Response{Data: resp}.JSON(ctx)
 }
 
 // Login godoc
